@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "WU Yandong — 个人网站 / 简历 / 项目 / 学习笔记",
+  "description": "WU Yandong — personal site / résumé / projects",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -13,6 +13,8 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/archivo-black": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^5.18.2",
     "katex": "^0.18.9",

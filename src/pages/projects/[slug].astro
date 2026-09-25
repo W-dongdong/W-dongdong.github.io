@@ -14,24 +14,22 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
 ---
 
 <Base
-  title={`${project.data.title} — 项目`}
+  title={`${project.data.title} — Project`}
   description={project.data.summary ?? project.data.title}
 >
   <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-    <header class="border-b border-slate-200 pb-8 dark:border-slate-800">
-      <div class="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+    <header class="border-b-2 border-ink pb-8">
+      <div class="crt-text flex flex-wrap items-center gap-3 text-lg text-ink-muted">
         <time datetime={dateStr}>{dateStr}</time>
         {project.data.status && (
-          <span class="rounded-full border border-brand/30 px-2.5 py-0.5 text-xs font-medium text-brand dark:border-sky-400/40 dark:text-sky-300">
-            {project.data.status}
-          </span>
+          <span class="crt-tag text-retro-red">{project.data.status}</span>
         )}
       </div>
-      <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+      <h1 class="mt-4 font-display text-3xl text-ink sm:text-4xl">
         {project.data.title}
       </h1>
       {project.data.summary && (
-        <p class="mt-3 text-lg text-slate-600 dark:text-slate-300">{project.data.summary}</p>
+        <p class="mt-3 text-lg text-ink-muted">{project.data.summary}</p>
       )}
       {project.data.tags.length > 0 && (
         <div class="mt-5 flex flex-wrap gap-2">
@@ -47,9 +45,9 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
               href={project.data.repo}
               target="_blank"
               rel="noopener noreferrer"
-              class="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+              class="retro-btn retro-btn--primary"
             >
-              GitHub 仓库
+              GitHub Repository
             </a>
           )}
           {project.data.demo && (
@@ -57,9 +55,9 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
               href={project.data.demo}
               target="_blank"
               rel="noopener noreferrer"
-              class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-brand hover:text-brand dark:border-slate-600 dark:text-slate-200 dark:hover:border-sky-300 dark:hover:text-sky-300"
+              class="retro-btn"
             >
-              在线演示
+              Live Demo
             </a>
           )}
         </div>

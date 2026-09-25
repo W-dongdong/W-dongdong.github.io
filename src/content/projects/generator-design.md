@@ -1,32 +1,32 @@
 ---
-title: "三相发电机课程设计 · 亚军"
-summary: "使用 SolidWorks 完成三相发电机的机械结构设计"
+title: "Three-Phase Generator Design · Runner-up"
+summary: "Designed the mechanical structure of a three-phase generator using SolidWorks."
 date: 2024-12-31
-tags: ["SolidWorks", "机械设计"]
+tags: ["SolidWorks", "Mechanical Design"]
 featured: false
-status: "已完成"
+status: "Completed"
 ---
 
-## 项目背景
+## Background
 
-这是一门机械设计课程的课程项目，要求完成三相发电机的完整机械结构设计，并在课程竞赛中评比。
+This was a mechanical design course project that required completing the full mechanical structure design of a three-phase generator, which was then judged in a course competition.
 
-## 我的做法
+## My Approach
 
-使用 SolidWorks 从零搭建三相发电机的机械结构，包括定子、转子、轴系与机座等部件，完成三维建模、装配与工程图输出，并反复优化装配关系与可制造性。
+I used SolidWorks to build the mechanical structure of a three-phase generator from scratch — including the stator, rotor, shafting, and frame — completing the 3D modeling, assembly, and engineering drawing output, and iteratively refining the assembly relations and manufacturability.
 
-## 成果
+## Results
 
-该设计在课程项目竞赛中获得亚军（Second Runner-up）。
+The design earned Second Runner-up in the course project competition.
 
-## 学到的
+## What I Learned
 
-- SolidWorks 三维建模与装配设计
-- 电机基本结构与工作原理
-- 面向制造的机械设计规范
+- SolidWorks 3D modeling and assembly design
+- Basic structure and working principles of electric machines
+- Design-for-manufacturing mechanical design practices
 
-## 技术要点
+## Key Technologies
 
-- SolidWorks 机械结构设计
-- 三相发电机结构
-- 课程竞赛亚军（Second Runner-up）
+- SolidWorks mechanical structure design
+- Three-phase generator structure
+- Course competition Second Runner-up

@@ -1,34 +1,34 @@
 ---
-title: "轮腿机器人仿真"
-summary: "在 Webots 中仿真轮腿机器人，用 LQR 与 VMC 算法实现自平衡控制"
+title: "Wheel-Legged Robot Simulation"
+summary: "Simulated a wheel-legged robot in Webots, implementing LQR and VMC algorithms for self-balancing control."
 date: 2026-07-03
-tags: ["仿真", "LQR", "控制", "Webots"]
+tags: ["Simulation", "LQR", "Control", "Webots"]
 repo: "https://github.com/W-dongdong/Wheel_Leg_simulation-Webots"
 featured: true
-status: "已完成"
+status: "Completed"
 ---
 
-## 项目背景
+## Background
 
-轮腿机器人结合了轮式的高效与腿式的越障能力，但其平衡控制是一大挑战。这是个人项目，我希望先在仿真中验证控制算法，再考虑实物部署。
+Wheel-legged robots combine the efficiency of wheels with the obstacle-climbing ability of legs, but balance control is a major challenge. This is a personal project: I wanted to validate control algorithms in simulation first before considering hardware deployment.
 
-## 我的做法
+## My Approach
 
-在 Webots 中搭建轮腿机器人仿真环境，建立简化动力学模型，分别实现 LQR（线性二次型调节器）与 VMC（虚拟模型控制）两种控制策略，让机器人在仿真中完成自平衡与移动。
+I built a wheel-legged robot simulation environment in Webots, developed a simplified dynamics model, and implemented two control strategies — LQR (Linear Quadratic Regulator) and VMC (Virtual Model Control) — to let the robot self-balance and move in simulation.
 
-## 成果
+## Results
 
-两种算法均成功使机器人在仿真中保持平衡并稳定移动。LQR 在扰动抑制上表现更佳，VMC 则更直观、便于调参。
+Both algorithms successfully kept the robot balanced and moving steadily in simulation. LQR performed better at disturbance rejection, while VMC was more intuitive and easier to tune.
 
-## 学到的
+## What I Learned
 
-- 简化动力学模型的建立与参数辨识
-- LQR 与 VMC 的适用场景差异
-- 从仿真到实物的控制算法迁移思路
+- Building and parameterizing simplified dynamics models
+- The different use cases of LQR versus VMC
+- How to transfer control algorithms from simulation to hardware
 
-## 技术要点
+## Key Technologies
 
-- Webots 仿真环境
-- LQR 自平衡控制
-- VMC（虚拟模型控制）
-- 动力学建模
+- Webots simulation environment
+- LQR self-balancing control
+- VMC (Virtual Model Control)
+- Dynamics modeling

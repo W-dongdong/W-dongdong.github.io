@@ -1,34 +1,34 @@
 ---
-title: "STM32 BSP 轻量库"
-summary: "用 C/C++ 开发的轻量级板级支持包，涵盖 CAN、I2C 与 Mahony 姿态解算"
+title: "STM32 BSP Library"
+summary: "Developed a lightweight Board Support Package in C/C++ for STM32, covering CAN, I2C, and the Mahony algorithm for IMU attitude estimation."
 date: 2026-06-30
-tags: ["STM32", "C++", "嵌入式"]
+tags: ["STM32", "C++", "Embedded"]
 repo: "https://github.com/W-dongdong/stm32_bsp_lib"
 featured: true
-status: "维护中"
+status: "Maintained"
 ---
 
-## 项目背景
+## Background
 
-在多个机器人项目中反复编写底层外设代码后，我意识到需要一个可复用的板级支持包（BSP），减少重复劳动并统一代码风格。
+After repeatedly writing low-level peripheral code across several robotics projects, I realized I needed a reusable Board Support Package (BSP) to reduce duplication and keep a consistent code style.
 
-## 我的做法
+## My Approach
 
-用 C/C++ 开发了一个轻量级 BSP 库，采用分层与可移植设计，将寄存器操作封装成清晰的外设接口，涵盖 CAN、I2C 等常用外设，并实现了基于 Mahony 算法的 IMU 姿态解算模块。
+I developed a lightweight BSP library in C/C++ with a layered, portable design. I wrapped register operations in clean peripheral interfaces covering common peripherals such as CAN and I2C, and implemented an IMU attitude-estimation module based on the Mahony algorithm.
 
-## 成果
+## Results
 
-该库已在我的多个项目中复用，显著缩短了底层开发周期，目前仍在持续维护与迭代。
+The library has been reused across several of my projects, significantly shortening low-level development time, and it remains under active maintenance and iteration.
 
-## 学到的
+## What I Learned
 
-- 分层架构与接口抽象的设计方法
-- CAN / I2C 等外设的细节与常见坑
-- Mahony 姿态解算的原理与参数整定
+- Layered architecture and interface abstraction design
+- CAN / I2C peripheral details and common pitfalls
+- The theory and parameter tuning of Mahony attitude estimation
 
-## 技术要点
+## Key Technologies
 
-- C/C++ 轻量 BSP
-- CAN、I2C 外设
-- Mahony 姿态解算
-- 分层与可移植设计
+- Lightweight C/C++ BSP
+- CAN and I2C peripherals
+- Mahony attitude estimation
+- Layered and portable design

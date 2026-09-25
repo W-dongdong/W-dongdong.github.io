@@ -2,14 +2,58 @@
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/* ------------------------------------------------------------------ */
+/*  Fonts (self-hosted, emitted as CSS variables)                      */
+/* ------------------------------------------------------------------ */
 @theme {
-  --color-brand: #1a3a84;
-  --color-brand-600: #24489e;
-  --color-brand-700: #162c68;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Archivo Black", "Arial Black", system-ui, sans-serif;
+  --font-crt: "VT323", ui-monospace, "Courier New", monospace;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Semantic palette (VHS paper / CRT dark room)                       */
+/* ------------------------------------------------------------------ */
+:root {
+  --bg: #f2e8d5;
+  --surface: #f8f1e0;
+  --fg: #171512;
+  --muted: #5f584a;
+  --blue: #1a3a84;
+  --red: #c63b2e;
+  --amber: #e8a020;
+  --green: #2e7d5b;
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a12;
+  --surface: #14141f;
+  --fg: #e8e4d8;
+  --muted: #9a94a8;
+  --blue: #5b8cff;
+  --red: #ff5c4d;
+  --amber: #ffb347;
+  --green: #3fc380;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Tailwind color utilities mapped to the semantic variables          */
+/* ------------------------------------------------------------------ */
+@theme inline {
+  --color-cream: var(--bg);
+  --color-cream-2: var(--surface);
+  --color-ink: var(--fg);
+  --color-ink-muted: var(--muted);
+  --color-retro-blue: var(--blue);
+  --color-retro-red: var(--red);
+  --color-retro-amber: var(--amber);
+  --color-retro-green: var(--green);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
 :root { color-scheme: light; }
 [data-theme="dark"] { color-scheme: dark; }
 
@@ -17,10 +61,267 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-sans);
-  background-color: #f8fafc;
-  color: #1e293b;
+  background-color: var(--bg);
+  color: var(--fg);
+  background-image: radial-gradient(rgba(23, 21, 18, 0.045) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 [data-theme="dark"] body {
-  background-color: #0f172a;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+}
+
+::selection {
+  background: var(--red);
+  color: var(--bg);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Retro utility classes                                              */
+/* ------------------------------------------------------------------ */
+
+/* 1. Classic six-colour rainbow bar */
+.rainbow-bar {
+  display: block;
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #e53935,
+    #fb8c00,
+    #fdd835,
+    #43a047,
+    #1e88e5,
+    #8e24aa
+  );
+}
+
+/* 2. CRT scanline overlay */
+.scanlines { position: relative; }
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(23, 21, 18, 0.05) 0px,
+    rgba(23, 21, 18, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+[data-theme="dark"] .scanlines::after {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* 3. SMPTE colour bars (7 vertical segments) */
+.color-bars {
+  display: block;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(
+    90deg,
+    #c0c0c0 0 14.28%,
+    #c0c000 14.28% 28.57%,
+    #00c0c0 28.57% 42.85%,
+    #00c000 42.85% 57.14%,
+    #c000c0 57.14% 71.42%,
+    #c00000 71.42% 85.71%,
+    #0000c0 85.71% 100%
+  );
+}
+
+/* 4. Hard border + offset (mis-registered) shadow */
+.retro-card {
+  border: 2px solid var(--fg);
+  background-color: var(--surface);
+  box-shadow: 6px 6px 0 var(--accent, var(--red));
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.retro-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--accent, var(--red));
+}
+.retro-card--red   { --accent: var(--red); }
+.retro-card--blue  { --accent: var(--blue); }
+.retro-card--amber { --accent: var(--amber); }
+.retro-card--green { --accent: var(--green); }
+.retro-card:hover .retro-card-title { color: var(--blue); }
+
+/* 5. CRT / VHS phosphor text */
+.crt-text {
+  font-family: var(--font-crt);
+  letter-spacing: 0.03em;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+}
+[data-theme="dark"] .crt-text {
+  text-shadow: 0 0 5px currentColor;
+}
+
+/* VHS on-screen-display badge (PLAY / REC / timestamps) */
+.osd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-crt);
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  padding: 0.3em 0.55em;
+  border: 1px solid currentColor;
+}
+
+/* Retro hard-edged button */
+.retro-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid var(--fg);
+  background-color: var(--surface);
+  color: var(--fg);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.1rem;
+  box-shadow: 4px 4px 0 var(--blue);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+  cursor: pointer;
+}
+.retro-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--blue);
+}
+.retro-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--blue);
+}
+.retro-btn--primary {
+  background-color: var(--red);
+  color: var(--bg);
+  box-shadow: 4px 4px 0 var(--fg);
+}
+.retro-btn--primary:hover { box-shadow: 6px 6px 0 var(--fg); }
+.retro-btn--primary:active { box-shadow: 2px 2px 0 var(--fg); }
+
+/* CRT bracket tag / label */
+.crt-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-crt);
+  font-size: 1.05rem;
+  line-height: 1.1;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--fg);
+  color: var(--fg);
+  background-color: var(--surface);
+}
+.crt-tag::before { content: "["; margin-right: 0.3rem; opacity: 0.7; }
+.crt-tag::after  { content: "]"; margin-left: 0.3rem; opacity: 0.7; }
+
+/* ------------------------------------------------------------------ */
+/*  Article / markdown prose (project detail pages)                    */
+/* ------------------------------------------------------------------ */
+.blog-prose {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.blog-prose h1,
+.blog-prose h2,
+.blog-prose h3,
+.blog-prose h4 {
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.25;
+  scroll-margin-top: 5rem;
+}
+.blog-prose h1 { font-size: 1.875rem; margin: 2.5rem 0 1rem; }
+.blog-prose h2 { font-size: 1.5rem; margin: 2.25rem 0 1rem; }
+.blog-prose h3 { font-size: 1.25rem; margin: 1.75rem 0 0.75rem; }
+.blog-prose h4 { font-size: 1.125rem; margin: 1.5rem 0 0.75rem; }
+.blog-prose p { margin: 1rem 0; }
+.blog-prose a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.blog-prose ul,
+.blog-prose ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+.blog-prose ul { list-style: square; }
+.blog-prose ol { list-style: decimal; }
+.blog-prose li { margin: 0.375rem 0; }
+.blog-prose li > ul,
+.blog-prose li > ol { margin: 0.375rem 0; }
+.blog-prose blockquote {
+  border-left: 4px solid var(--blue);
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  color: var(--muted);
+  font-style: italic;
+}
+.blog-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--surface);
+  color: var(--red);
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--fg);
+}
+.blog-prose pre {
+  background: #0f172a;
   color: #e2e8f0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  font-size: 0.875rem;
+  border: 2px solid var(--fg);
+  box-shadow: 5px 5px 0 var(--blue);
+}
+.blog-prose pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border: 0;
+  font-size: 0.9em;
+}
+.blog-prose img {
+  margin: 1.25rem 0;
+  max-width: 100%;
+  border: 2px solid var(--fg);
+  box-shadow: 6px 6px 0 var(--blue);
+}
+.blog-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.95rem;
+}
+.blog-prose th,
+.blog-prose td {
+  border: 1px solid var(--fg);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.blog-prose th { background: var(--surface); }
+.blog-prose hr {
+  border: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #e53935, #fb8c00, #fdd835, #43a047, #1e88e5, #8e24aa);
+  margin: 2rem 0;
+}
+.blog-prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
 }

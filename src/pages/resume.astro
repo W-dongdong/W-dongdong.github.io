@@ -2,85 +2,95 @@
 import Base from '../layouts/Base.astro';
 
 const skills = [
-  'C / C++ / Python',
-  '裸机 STM32',
-  'CAN / I2C / UART',
-  'PID / 级联 PID / LQR',
+  'Programming — C, C++, Python',
+  'Embedded — bare-metal STM32, CAN / I2C / UART',
+  'Control — PID & cascade PID, LQR',
   'ROS2 / Linux',
   'FreeRTOS',
 ];
 
+const projects = [
+  { title: 'Robocon Robotics Competition · Core Member', summary: 'STM32-based low-level controller with PID motor group control and Mecanum-wheel kinematics.' },
+  { title: 'Wheel-Legged Robot Simulation', summary: 'Webots simulation implementing LQR and VMC for self-balancing control.' },
+  { title: 'STM32 BSP Library', summary: 'Lightweight Board Support Package in C/C++ covering CAN, I2C, and Mahony attitude estimation.' },
+  { title: 'AI Car Racing · Champion', summary: 'YOLO-based, vision-guided maze-solving car on the Jetson Nano, finishing in 18.88 seconds.' },
+  { title: 'Three-Phase Generator Design · Runner-up', summary: 'Mechanical structure design of a three-phase generator using SolidWorks.' },
+];
+
 const honors = [
-  { title: 'AI 小车竞速冠军', date: '2026.08' },
-  { title: "院长嘉许名单 Dean's Honours List", date: '2024/25、2025/26' },
-  { title: '课程项目亚军', date: '2024' },
+  { title: 'Champion, AI Car Racing', date: 'Aug 2026' },
+  { title: "Dean's Honours List", date: '2024/25, 2025/26' },
+  { title: 'Second Runner-up, Large Group Project', date: '2024' },
 ];
 ---
 
 <Base
-  title="简历 — WU Yandong"
-  description="WU Yandong 的在线简历：香港理工大学电子工程，机器人 / 嵌入式 / 控制系统方向。"
+  title="Résumé — WU Yandong"
+  description="Online résumé of WU Yandong: Electrical Engineering undergraduate at The Hong Kong Polytechnic University, focused on robotics, embedded systems, and control systems."
 >
-  <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+  <section class="mx-auto max-w-4xl px-4 py-14 sm:px-6">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-          WU Yandong
-        </h1>
-        <p class="mt-2 text-lg text-slate-600 dark:text-slate-300">
-          机器人 / 嵌入式 / 控制系统
+        <h1 class="font-display text-3xl text-ink sm:text-4xl">WU Yandong</h1>
+        <p class="mt-2 text-lg text-ink-muted">
+          Electrical Engineering · Robotics / Embedded Systems / Control Systems
         </p>
       </div>
-      <a
-        href="/MyCV.pdf"
-        class="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
-      >
-        下载英文简历 PDF
-      </a>
+      <a href="/MyCV.pdf" class="retro-btn retro-btn--primary">Download Résumé (PDF)</a>
     </div>
+    <div class="rainbow-bar mt-6" aria-hidden="true"></div>
 
-    <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600 dark:text-slate-300">
-      <a href="mailto:dongdong7559@gmail.com" class="hover:text-brand dark:hover:text-sky-300">
+    <div class="crt-text mt-6 flex flex-wrap gap-x-6 gap-y-2 text-lg text-ink-muted">
+      <span>Hong Kong SAR, China</span>
+      <a href="mailto:dongdong7559@gmail.com" class="hover:text-retro-blue">
         dongdong7559@gmail.com
       </a>
       <a
         href="https://github.com/W-dongdong"
         target="_blank"
         rel="noopener noreferrer"
-        class="hover:text-brand dark:hover:text-sky-300"
+        class="hover:text-retro-blue"
       >
         GitHub · W-dongdong
       </a>
     </div>
 
-    <h2 class="mt-12 text-2xl font-bold text-slate-900 dark:text-white">教育经历</h2>
-    <div class="mt-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-[#1e293b]">
+    <h2 class="mt-12 font-display text-2xl text-ink">Education</h2>
+    <div class="retro-card retro-card--blue mt-4 p-5">
       <div class="flex flex-wrap items-center justify-between gap-2">
-        <h3 class="font-semibold text-slate-900 dark:text-white">香港理工大学 · 电子工程（本科）</h3>
-        <time class="text-sm text-slate-500 dark:text-slate-400">2024.09 – 2028.09</time>
+        <h3 class="font-display text-base text-ink">The Hong Kong Polytechnic University · Bachelor of Engineering in Electrical Engineering</h3>
+        <time class="crt-text text-lg text-ink-muted">Sept 2024 – Sept 2028</time>
       </div>
-      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
-        <li>GPA 3.54 / 4.3 · 当前大三</li>
-        <li>辅修：Electronic System &amp; IoT</li>
-        <li>香港工程师学会（HKIE）学生会员</li>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-muted">
+        <li>GPA 3.54 / 4.3 · Year 3 Undergraduate</li>
+        <li>Minor in Electronic System &amp; Internet of Things</li>
+        <li>Student Member of the HKIE (Hong Kong Institution of Engineers)</li>
       </ul>
     </div>
 
-    <h2 class="mt-12 text-2xl font-bold text-slate-900 dark:text-white">技能</h2>
-    <ul class="mt-4 flex flex-wrap gap-2">
-      {skills.map((skill) => (
-        <li class="rounded-full bg-slate-100 px-4 py-1.5 text-sm font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">
-          {skill}
+    <h2 class="mt-12 font-display text-2xl text-ink">Projects &amp; Experience</h2>
+    <ul class="mt-4 space-y-3">
+      {projects.map((project) => (
+        <li class="retro-card retro-card--green px-5 py-3">
+          <span class="font-display text-sm text-ink">{project.title}</span>
+          <p class="mt-1 text-sm text-ink-muted">{project.summary}</p>
         </li>
       ))}
     </ul>
 
-    <h2 class="mt-12 text-2xl font-bold text-slate-900 dark:text-white">荣誉奖项</h2>
+    <h2 class="mt-12 font-display text-2xl text-ink">Skills</h2>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {skills.map((skill) => (
+        <li class="crt-tag">{skill}</li>
+      ))}
+    </ul>
+
+    <h2 class="mt-12 font-display text-2xl text-ink">Honours &amp; Awards</h2>
     <ul class="mt-4 space-y-3">
       {honors.map((honor) => (
-        <li class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 dark:border-slate-700 dark:bg-[#1e293b]">
-          <span class="font-medium text-slate-800 dark:text-slate-100">{honor.title}</span>
-          <time class="text-sm text-slate-500 dark:text-slate-400">{honor.date}</time>
+        <li class="retro-card retro-card--amber flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+          <span class="font-display text-sm text-ink">{honor.title}</span>
+          <time class="crt-text text-lg text-ink-muted">{honor.date}</time>
         </li>
       ))}
     </ul>

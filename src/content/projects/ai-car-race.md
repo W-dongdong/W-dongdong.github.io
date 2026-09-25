@@ -1,34 +1,34 @@
 ---
-title: "AI 小车竞速 · 冠军"
-summary: "基于 YOLO 视觉循迹与 Jetson Nano 的迷宫小车，18.88 秒完赛"
+title: "AI Car Racing · Champion"
+summary: "Built a YOLO-based, vision-guided maze-solving robot car on the Jetson Nano, finishing the race in 18.88 seconds."
 date: 2026-08-31
-tags: ["YOLO", "Jetson", "视觉", "机器人"]
+tags: ["YOLO", "Jetson", "Vision", "Robotics"]
 repo: "https://github.com/W-dongdong/2026PolyU-AI-Robot-Car-Race"
 featured: false
-status: "已完成"
+status: "Completed"
 ---
 
-## 项目背景
+## Background
 
-这是一场校级 AI 小车竞速赛，要求小车在迷宫中自主寻迹并以最短时间完赛。视觉检测与边缘推理的实时性是决定胜负的关键。
+This was a school-wide AI car racing competition in which each car had to navigate a maze autonomously and finish in the shortest time. The real-time performance of vision detection and edge inference was decisive.
 
-## 我的做法
+## My Approach
 
-基于 Jetson Nano 做边缘推理，使用 YOLO 目标检测实现视觉循迹，识别赛道标志并规划迷宫寻迹路径，让小车在无人干预下自主完成全程。
+I used a Jetson Nano for edge inference and YOLO object detection for vision-based line following, recognizing track markers and planning a path through the maze so the car could complete the full course without human intervention.
 
-## 成果
+## Results
 
-小车以 18.88 秒的成绩完赛，获得比赛冠军。
+The car finished the race in 18.88 seconds and won the championship.
 
-## 学到的
+## What I Learned
 
-- YOLO 模型在嵌入式平台的部署与加速
-- 视觉循迹中的延迟控制与鲁棒性
-- 迷宫路径规划与实时决策
+- Deploying and accelerating YOLO models on embedded platforms
+- Latency control and robustness in vision-based line following
+- Maze path planning and real-time decision making
 
-## 技术要点
+## Key Technologies
 
-- YOLO 目标检测
-- Jetson Nano 边缘推理
-- 迷宫寻迹
-- 18.88 秒完赛
+- YOLO object detection
+- Jetson Nano edge inference
+- Maze navigation
+- 18.88-second finish

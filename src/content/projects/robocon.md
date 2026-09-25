@@ -1,33 +1,33 @@
 ---
-title: "Robocon 机器人竞赛 · 核心成员"
-summary: "为全自主机器人开发 STM32 底层控制器，实现 PID 电机群控、麦克纳姆轮底盘运动学与 UART 通信"
+title: "Robocon Robotics Competition · Core Member"
+summary: "Developed an STM32-based low-level controller for a fully autonomous robot, featuring PID motor group control, Mecanum-wheel kinematics, and UART communication."
 date: 2026-06-30
-tags: ["STM32", "PID", "机器人", "嵌入式"]
+tags: ["STM32", "PID", "Robotics", "Embedded"]
 featured: true
-status: "已完成"
+status: "Completed"
 ---
 
-## 项目背景
+## Background
 
-我作为香港理工大学机器人 EE 队核心成员参加 Robocon 竞赛，负责机器人的底层控制器开发，让全自主机器人在赛场上稳定、快速地完成各项任务。
+I competed in the Robocon robotics competition as a core member of The Hong Kong Polytechnic University's robotics EE team, where I was responsible for developing the robot's low-level controller so the fully autonomous robot could complete its tasks reliably and quickly on the field.
 
-## 我的做法
+## My Approach
 
-基于 STM32 进行裸机开发，直接操作寄存器以保证实时性。实现了 PID 电机群控，针对麦克纳姆轮底盘完成逆运动学解算，将上位机（companion computer）下发的速度指令映射到四个轮子的转速，并通过 UART 与上位机进行实时通信。
+I did bare-metal development on an STM32, writing directly to registers to guarantee real-time performance. I implemented PID motor group control and inverse kinematics for the Mecanum-wheel chassis, mapping velocity commands sent by the companion computer to the speeds of the four wheels, and communicating with the companion computer in real time over UART.
 
-## 成果
+## Results
 
-底层控制器在多轮调试中稳定运行，机器人底盘响应迅速、定位准确，为整队顺利完成赛季目标提供了可靠的执行层支撑。
+The low-level controller ran reliably across many rounds of tuning. The chassis responded quickly and localized accurately, providing a dependable actuation layer that helped the team reach its season goals.
 
-## 学到的
+## What I Learned
 
-- 实时系统的时序约束与中断优先级管理
-- 麦克纳姆轮逆运动学的推导与工程落地
-- 与上位机通信协议的可靠性设计
+- Timing constraints and interrupt priority management in real-time systems
+- Deriving and engineering Mecanum-wheel inverse kinematics
+- Designing a reliable communication protocol with the companion computer
 
-## 技术要点
+## Key Technologies
 
-- STM32 裸机开发
-- PID 电机群控
-- 麦克纳姆轮底盘逆运动学
-- UART 通信
+- Bare-metal STM32 development
+- PID motor group control
+- Mecanum-wheel chassis inverse kinematics
+- UART communication
