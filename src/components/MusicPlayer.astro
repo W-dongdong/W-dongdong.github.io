@@ -377,10 +377,17 @@ const tracks = Object.keys(modules)
     function armFirstGesture() {
       if (armed) return;
       armed = true;
-      var start = function () {
+      var start = function (event) {
         document.removeEventListener('click', start, true);
         document.removeEventListener('keydown', start, true);
         document.removeEventListener('touchstart', start, true);
+        // If the first interaction is the play button itself, its own handler
+        // will start playback — skip here to avoid the race where the gesture
+        // handler starts playback and the button handler immediately pauses it.
+        var target = event && event.target;
+        if (target && typeof target.closest === 'function' && target.closest('#bgm-toggle')) {
+          return;
+        }
         if (get(localStorage, DISABLED) !== '1' && audio.paused) attempt();
       };
       document.addEventListener('click', start, true);

@@ -104,29 +104,34 @@ function isActive(href: string) {
   <div class="rainbow-bar" aria-hidden="true"></div>
 </header>
 
-<script is:inline>
-  (function () {
-    var btn = document.getElementById('menu-toggle');
-    var menu = document.getElementById('mobile-menu');
-    if (btn && menu) {
-      btn.addEventListener('click', function () {
-        menu.classList.toggle('hidden');
-        var open = !menu.classList.contains('hidden');
-        btn.setAttribute('aria-expanded', String(open));
-        btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-      });
-    }
-
+<script>
+  function renderClock() {
     var clock = document.getElementById('osd-clock');
-    if (clock) {
-      var pad = function (n) { return String(n).padStart(2, '0'); };
-      var tick = function () {
-        var d = new Date();
-        clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
-      };
-      tick();
-      if (window.__osdClockTimer) clearInterval(window.__osdClockTimer);
-      window.__osdClockTimer = setInterval(tick, 1000);
-    }
-  })();
+    if (!clock) return;
+    var d = new Date();
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+
+  // One persistent timer updates whichever #osd-clock element is currently in
+  // the DOM, so it keeps ticking across ClientRouter page transitions.
+  renderClock();
+  setInterval(renderClock, 1000);
+  // ClientRouter swaps the header on navigation; re-render the clock on
+  // `astro:after-swap` so it never shows the server-rendered 00:00:00.
+  document.addEventListener('astro:after-swap', renderClock);
+
+  // Mobile menu: delegated, so it also works on the re-rendered header.
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!(target instanceof Element)) return;
+    var btn = target.closest('#menu-toggle');
+    if (!btn) return;
+    var menu = document.getElementById('mobile-menu');
+    if (!menu) return;
+    menu.classList.toggle('hidden');
+    var open = !menu.classList.contains('hidden');
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
 </script>

@@ -25,54 +25,66 @@
   <span data-label>System</span>
 </button>
 
-<script is:inline>
-  (function () {
-    var btn = document.getElementById('theme-toggle');
+<script>
+  var modes = ['light', 'dark', 'system'];
+  var labels = { light: 'Light', dark: 'Dark', system: 'System' };
+
+  function getMode() {
+    var s = null;
+    try { s = localStorage.getItem('theme'); } catch (e) {}
+    return s === 'light' || s === 'dark' || s === 'system' ? s : 'system';
+  }
+
+  function render(btn) {
     if (!btn) return;
+    var label = btn.querySelector('[data-label]');
+    if (label) label.textContent = labels[getMode()];
+    btn.setAttribute('aria-label', 'Theme: ' + labels[getMode()]);
+  }
 
-    var modes = ['light', 'dark', 'system'];
-    var labels = { light: 'Light', dark: 'Dark', system: 'System' };
-
-    function getMode() {
-      var s = null;
-      try { s = localStorage.getItem('theme'); } catch (e) {}
-      return s === 'light' || s === 'dark' || s === 'system' ? s : 'system';
+  function apply(mode) {
+    var resolved = mode === 'light' || mode === 'dark'
+      ? mode
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', resolved);
+    if (mode === 'system') {
+      try { localStorage.removeItem('theme'); } catch (e) {}
+    } else {
+      try { localStorage.setItem('theme', mode); } catch (e) {}
     }
+    render(document.getElementById('theme-toggle'));
+  }
 
-    function render(mode) {
-      var label = btn.querySelector('[data-label]');
-      if (label) label.textContent = labels[mode];
-      btn.setAttribute('aria-label', 'Theme: ' + labels[mode]);
+  // ClientRouter swaps the <html> attributes on navigation, which strips the
+  // client-applied `data-theme` (set on first load in Base.astro). Re-apply the
+  // current mode and refresh the label on `astro:after-swap`, which fires
+  // synchronously right after the DOM swap and before the view-transition
+  // snapshot, so the wrong theme never flashes.
+  document.addEventListener('astro:after-swap', function () {
+    apply(getMode());
+  });
+
+  // Delegated click, so the button keeps working on the re-rendered header.
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    if (!(target instanceof Element)) return;
+    var btn = target.closest('#theme-toggle');
+    if (!btn) return;
+    var cur = getMode();
+    var next = modes[(modes.indexOf(cur) + 1) % modes.length];
+    apply(next);
+  });
+
+  // Initial render.
+  render(document.getElementById('theme-toggle'));
+
+  // Keep system mode in sync when the OS colour scheme changes.
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  var onChange = function () {
+    if (getMode() === 'system') {
+      document.documentElement.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
     }
-
-    function apply(mode) {
-      var resolved = mode === 'light' || mode === 'dark'
-        ? mode
-        : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', resolved);
-      if (mode === 'system') {
-        try { localStorage.removeItem('theme'); } catch (e) {}
-      } else {
-        try { localStorage.setItem('theme', mode); } catch (e) {}
-      }
-      render(mode);
-    }
-
-    render(getMode());
-
-    btn.addEventListener('click', function () {
-      var cur = getMode();
-      var next = modes[(modes.indexOf(cur) + 1) % modes.length];
-      apply(next);
-    });
-
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    var onChange = function () {
-      if (getMode() === 'system') {
-        document.documentElement.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
-      }
-    };
-    if (mq.addEventListener) mq.addEventListener('change', onChange);
-    else if (mq.addListener) mq.addListener(onChange);
-  })();
+  };
+  if (mq.addEventListener) mq.addEventListener('change', onChange);
+  else if (mq.addListener) mq.addListener(onChange);
 </script>
