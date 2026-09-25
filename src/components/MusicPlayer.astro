@@ -38,7 +38,13 @@ const tracks = Object.keys(modules)
 
 {
   tracks.length > 0 && (
-    <div id="bgm-player" class="bgm-player" data-playlist={JSON.stringify(tracks)} data-mode="list">
+    <div
+      id="bgm-player"
+      class="bgm-player"
+      data-playlist={JSON.stringify(tracks)}
+      data-mode="list"
+      transition:persist
+    >
       <audio id="bgm-audio" preload="auto" />
 
       <div id="bgm-list-panel" class="bgm-list-panel" hidden>
@@ -263,6 +269,10 @@ const tracks = Object.keys(modules)
   (function () {
     var root = document.getElementById('bgm-player');
     if (!root) return;
+    // With view transitions this element is persisted, so this inline script
+    // may run again on navigation. Initialise once only.
+    if (root.getAttribute('data-initialized') === '1') return;
+    root.setAttribute('data-initialized', '1');
     var audio = document.getElementById('bgm-audio');
     var playBtn = document.getElementById('bgm-toggle');
     var label = document.getElementById('bgm-track');

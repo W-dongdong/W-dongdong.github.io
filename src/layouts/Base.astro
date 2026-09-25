@@ -9,6 +9,7 @@ import '@fontsource/archivo-black';
 import '@fontsource/vt323';
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
+import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MusicPlayer from '../components/MusicPlayer.astro';
@@ -28,6 +29,7 @@ const siteName = 'WU Yandong';
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteName} />
+    <ClientRouter />
     <script is:inline>
       (function () {
         var stored = null;

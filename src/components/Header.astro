@@ -125,7 +125,8 @@ function isActive(href: string) {
         clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
       };
       tick();
-      setInterval(tick, 1000);
+      if (window.__osdClockTimer) clearInterval(window.__osdClockTimer);
+      window.__osdClockTimer = setInterval(tick, 1000);
     }
   })();
 </script>
