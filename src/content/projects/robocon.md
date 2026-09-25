@@ -1,33 +1,44 @@
 ---
-title: "Robocon Robotics Competition · Core Member"
-summary: "Developed an STM32-based low-level controller for a fully autonomous robot, featuring PID motor group control, Mecanum-wheel kinematics, and UART communication."
+title: "Robocon 2026 — EE Team Firmware"
+summary: "Embedded firmware for PolyU's EE team at Robocon 2026 — an STM32 (HAL / C) program that drives a fully autonomous competition robot."
 date: 2026-06-30
-tags: ["STM32", "PID", "Robotics", "Embedded"]
+tags: ["STM32", "C", "CAN", "PID", "Robotics", "Embedded"]
+repo: "https://github.com/W-dongdong/2026RoboconEEProgram"
 featured: true
 status: "Completed"
 ---
 
 ## Background
 
-I competed in the Robocon robotics competition as a core member of The Hong Kong Polytechnic University's robotics EE team, where I was responsible for developing the robot's low-level controller so the fully autonomous robot could complete its tasks reliably and quickly on the field.
+Robocon is an international robotics competition in which each team builds a robot to complete a task autonomously. As a core member of The Hong Kong Polytechnic University's EE team, I worked on the embedded program that drives the robot — the firmware layer that turns high-level strategy into real motor motion on the field.
+
+This project is the EE team's program for Robocon 2026, published on GitHub as [`2026RoboconEEProgram`](https://github.com/W-dongdong/2026RoboconEEProgram).
 
 ## My Approach
 
-I did bare-metal development on an STM32, writing directly to registers to guarantee real-time performance. I implemented PID motor group control and inverse kinematics for the Mecanum-wheel chassis, mapping velocity commands sent by the companion computer to the speeds of the four wheels, and communicating with the companion computer in real time over UART.
+The firmware is an STM32 project generated with STM32CubeMX and built in Keil MDK, organised into layers so that board support, peripheral drivers and application logic stay separate:
+
+- `Core` / `Drivers` — CubeMX-generated startup code and STM32 HAL peripheral drivers
+- `User` — our own application logic: motor control and communication
+- `MDK-ARM` — the Keil MDK project used to build and flash the board
+
+On top of the HAL I implemented PID motor group control, inverse kinematics for the Mecanum-wheel chassis, and board-to-board communication (CAN / UART) inside the robot.
 
 ## Results
 
-The low-level controller ran reliably across many rounds of tuning. The chassis responded quickly and localized accurately, providing a dependable actuation layer that helped the team reach its season goals.
+The program ran reliably across many rounds of tuning, giving the team a dependable actuation layer for the robot's autonomous runs.
 
 ## What I Learned
 
-- Timing constraints and interrupt priority management in real-time systems
-- Deriving and engineering Mecanum-wheel inverse kinematics
-- Designing a reliable communication protocol with the companion computer
+- Structuring STM32 firmware into a clean BSP / driver / application stack
+- Real-time motor control: PID tuning, interrupt priorities and timing
+- Deriving and implementing Mecanum-wheel inverse kinematics
+- Using CAN and UART for inter-board communication
 
 ## Key Technologies
 
-- Bare-metal STM32 development
+- STM32 + HAL, written in C
+- STM32CubeMX / Keil MDK toolchain
+- CAN bus and UART communication
 - PID motor group control
-- Mecanum-wheel chassis inverse kinematics
-- UART communication
+- Mecanum-wheel chassis kinematics

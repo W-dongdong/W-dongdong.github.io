@@ -1,9 +1,9 @@
 ---
 title: "AI Car Racing · Champion"
-summary: "Built a YOLO-based, vision-guided maze-solving robot car on the Jetson Nano, finishing the race in 18.88 seconds."
+summary: "A YOLO-based, vision-guided maze-solving robot car on the Jetson Nano — TensorRT inference with encoder fusion, finishing the race in 18.88 seconds."
 date: 2026-08-31
-tags: ["YOLO", "Jetson", "Vision", "Robotics"]
-repo: "https://github.com/W-dongdong/2026PolyU-AI-Robot-Car-Race"
+tags: ["YOLO", "Jetson", "TensorRT", "Vision", "Robotics"]
+repo: "https://github.com/W-dongdong/2026PolyU-AI-Robot-Car-Race/tree/master"
 featured: false
 status: "Completed"
 ---
@@ -14,7 +14,7 @@ This was a school-wide AI car racing competition in which each car had to naviga
 
 ## My Approach
 
-I used a Jetson Nano for edge inference and YOLO object detection for vision-based line following, recognizing track markers and planning a path through the maze so the car could complete the full course without human intervention.
+I trained a YOLO detector and deployed it on the Jetson Nano, exporting the model to ONNX and then to a TensorRT engine (`best.engine`) so inference could run in real time on the edge. On top of detection I built the driving logic in Python, iterating through several versions (`game.py` → `game(v1.5)`) to add wheel-encoder fusion and track optimisation, with INA219 current sensing for power monitoring and a `track.yaml` describing the course.
 
 ## Results
 
@@ -22,13 +22,13 @@ The car finished the race in 18.88 seconds and won the championship.
 
 ## What I Learned
 
-- Deploying and accelerating YOLO models on embedded platforms
+- Training YOLO models and accelerating them with TensorRT on embedded hardware
 - Latency control and robustness in vision-based line following
-- Maze path planning and real-time decision making
+- Fusing vision with wheel encoders for more stable, repeatable control
 
 ## Key Technologies
 
-- YOLO object detection
-- Jetson Nano edge inference
-- Maze navigation
-- 18.88-second finish
+- YOLO training + ONNX / TensorRT deployment on Jetson Nano
+- Python control program with wheel-encoder fusion
+- INA219 current sensing
+- Real-time maze navigation

@@ -1,0 +1,159 @@
+---
+// VHS-styled background music player.
+//
+// Behaviour:
+//   * Tries to autoplay on page load (browsers only allow this once the
+//     visitor has interacted with the site, so it falls back to starting on
+//     the first click / keypress / tap).
+//   * A visitor who pauses the music is remembered in localStorage, so the
+//     music never starts again uninvited for them.
+//   * Playback position and state survive page navigation within a tab.
+//
+// Drop your audio file at `public/music/bgm.mp3` (or change SRC below).
+const SRC = '/music/bgm.mp3';
+---
+
+<div id="bgm-player" class="bgm-player">
+  <audio id="bgm-audio" src={SRC} loop preload="auto"></audio>
+  <button
+    id="bgm-toggle"
+    type="button"
+    class="bgm-toggle"
+    aria-label="Play background music"
+    aria-pressed="false"
+    title="Background music (click to play / pause)"
+  >
+    <span id="bgm-icon" class="bgm-icon" aria-hidden="true">▶</span>
+    <span class="bgm-text">BGM</span>
+  </button>
+</div>
+
+<style>
+  .bgm-player {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 60;
+  }
+
+  .bgm-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    border: 2px solid var(--fg);
+    background: var(--surface);
+    color: var(--fg);
+    font-family: var(--font-crt);
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--blue);
+    transition: box-shadow 0.12s ease, transform 0.12s ease;
+  }
+
+  .bgm-toggle:hover { box-shadow: 6px 6px 0 var(--blue); }
+  .bgm-toggle:active { box-shadow: 2px 2px 0 var(--blue); transform: translate(2px, 2px); }
+  .bgm-toggle.is-playing { box-shadow: 4px 4px 0 var(--red); }
+  .bgm-toggle.is-playing:hover { box-shadow: 6px 6px 0 var(--red); }
+
+  .bgm-icon { letter-spacing: 0.05em; }
+  .bgm-text { font-size: 1rem; letter-spacing: 0.08em; }
+
+  @media (max-width: 640px) {
+    .bgm-text { display: none; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var audio = document.getElementById('bgm-audio');
+    var btn = document.getElementById('bgm-toggle');
+    var icon = document.getElementById('bgm-icon');
+    if (!audio || !btn || !icon) return;
+
+    var DISABLED = 'bgm-disabled'; // localStorage — visitor explicitly turned music off
+    var PLAYING = 'bgm-playing'; // sessionStorage — currently playing
+    var TIME = 'bgm-time'; // sessionStorage — playback position
+
+    function get(store, key) {
+      try { return store.getItem(key); } catch (e) { return null; }
+    }
+    function set(store, key, value) {
+      try { store.setItem(key, value); } catch (e) {}
+    }
+
+    function paint(isPlaying) {
+      icon.textContent = isPlaying ? '❚❚' : '▶';
+      btn.classList.toggle('is-playing', isPlaying);
+      btn.setAttribute('aria-pressed', String(isPlaying));
+      btn.setAttribute(
+        'aria-label',
+        isPlaying ? 'Pause background music' : 'Play background music'
+      );
+    }
+
+    // Resume the position from earlier in this tab session.
+    var saved = parseFloat(get(sessionStorage, TIME) || '0');
+    if (!isNaN(saved) && saved > 0) {
+      try { audio.currentTime = saved; } catch (e) {}
+    }
+
+    function attempt() {
+      var promise = audio.play();
+      if (promise && typeof promise.catch === 'function') {
+        promise.catch(function () {
+          paint(false);
+          armFirstGesture();
+        });
+      }
+    }
+
+    var armed = false;
+    function armFirstGesture() {
+      if (armed) return;
+      armed = true;
+      var start = function () {
+        document.removeEventListener('click', start, true);
+        document.removeEventListener('keydown', start, true);
+        document.removeEventListener('touchstart', start, true);
+        if (get(localStorage, DISABLED) !== '1' && audio.paused) attempt();
+      };
+      document.addEventListener('click', start, true);
+      document.addEventListener('keydown', start, true);
+      document.addEventListener('touchstart', start, true);
+    }
+
+    if (get(localStorage, DISABLED) === '1') {
+      // This visitor already turned the music off — stay quiet.
+      paint(false);
+    } else {
+      attempt();
+    }
+
+    btn.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (audio.paused) {
+        set(localStorage, DISABLED, '0');
+        attempt();
+      } else {
+        audio.pause();
+        set(localStorage, DISABLED, '1');
+      }
+    });
+
+    audio.addEventListener('play', function () {
+      set(sessionStorage, PLAYING, '1');
+      paint(true);
+    });
+    audio.addEventListener('pause', function () {
+      set(sessionStorage, PLAYING, '0');
+      paint(false);
+    });
+    audio.addEventListener('timeupdate', function () {
+      set(sessionStorage, TIME, String(audio.currentTime));
+    });
+
+    paint(!audio.paused);
+  })();
+</script>
