@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects'))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<Base
+  title="WU Yandong — 机器人 / 嵌入式 / 控制系统"
+  description="香港理工大学 电子工程 · 机器人 / 嵌入式 / 控制系统。WU Yandong 的个人网站、项目与学习笔记。"
+>
+  <Hero />
+
+  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white">精选项目</h2>
+      <a href="/projects" class="text-sm font-medium text-brand hover:underline dark:text-sky-300">
+        查看全部 →
+      </a>
+    </div>
+    {projects.length > 0 ? (
+      <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.map((p) => (
+          <ProjectCard project={p} />
+        ))}
+      </div>
+    ) : (
+      <p class="mt-6 text-sm text-slate-500 dark:text-slate-400">暂无项目。</p>
+    )}
+  </section>
+
+  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white">最新博客</h2>
+      <a href="/blog" class="text-sm font-medium text-brand hover:underline dark:text-sky-300">
+        查看全部 →
+      </a>
+    </div>
+    {posts.length > 0 ? (
+      <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((p) => (
+          <PostCard post={p} />
+        ))}
+      </div>
+    ) : (
+      <p class="mt-6 text-sm text-slate-500 dark:text-slate-400">暂无文章。</p>
+    )}
+  </section>
+
+  <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+    <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center dark:border-slate-700 dark:bg-[#1e293b]">
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white">联系方式</h2>
+      <p class="mt-2 text-slate-600 dark:text-slate-300">欢迎交流合作，随时联系我。</p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="mailto:dongdong7559@gmail.com"
+          class="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+        >
+          发送邮件
+        </a>
+        <a
+          href="https://github.com/W-dongdong"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-brand hover:text-brand dark:border-slate-600 dark:text-slate-200 dark:hover:border-sky-300 dark:hover:text-sky-300"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

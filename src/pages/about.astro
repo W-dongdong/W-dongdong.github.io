@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+
+const skills = [
+  'C / C++ / Python',
+  '裸机 STM32',
+  'CAN / I2C / UART',
+  'PID / 级联 PID / LQR',
+  'ROS2 / Linux',
+  'FreeRTOS',
+];
+
+const interests = [
+  '机器人控制',
+  '嵌入式系统',
+  '控制系统',
+  '运动控制算法',
+  '实时操作系统',
+];
+---
+
+<Base
+  title="关于我 — WU Yandong"
+  description="WU Yandong，香港理工大学电子工程本科生，专注机器人、嵌入式与控制系统的研究与开发。"
+>
+  <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+      关于我
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+      我是 WU Yandong，香港理工大学电子工程专业本科生，研究方向集中在机器人、嵌入式系统与控制系统。
+      热衷于将理论算法落地到真实的硬件平台上，从底层驱动到上层控制都有实践。
+    </p>
+
+    <h2 class="mt-12 text-2xl font-bold text-slate-900 dark:text-white">教育经历</h2>
+    <ol class="mt-6 space-y-6 border-l-2 border-slate-200 pl-6 dark:border-slate-700">
+      <li class="relative">
+        <span class="absolute -left-[31px] top-1.5 h-3 w-3 rounded-full border-2 border-brand bg-white dark:bg-[#0f172a]"></span>
+        <div class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-[#1e293b]">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="font-semibold text-slate-900 dark:text-white">香港理工大学 · 电子工程（本科）</h3>
+            <time class="text-sm text-slate-500 dark:text-slate-400">2024.09 – 2028.09</time>
+          </div>
+          <ul class="mt-2 space-y-1 text-sm text-slate-600 dark:text-slate-300">
+            <li>GPA 3.54 / 4.3 · 当前大三</li>
+            <li>辅修：Electronic System &amp; IoT</li>
+          </ul>
+        </div>
+      </li>
+    </ol>
+
+    <h2 class="mt-12 text-2xl font-bold text-slate-900 dark:text-white">专业资质</h2>
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-[#1e293b]">
+        <h3 class="font-semibold text-slate-900 dark:text-white">辅修方向</h3>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Electronic System &amp; IoT</p>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-[#1e293b]">
+        <h3 class="font-semibold text-slate-900 dark:text-white">专业会员</h3>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">香港工程师学会（HKIE）学生会员</p>
+      </div>
+    </div>
+
+    <h2 class="mt-12 text-2xl font-bold text-slate-900 dark:text-white">技能</h2>
+    <ul class="mt-6 flex flex-wrap gap-2">
+      {skills.map((skill) => (
+        <li class="rounded-full bg-slate-100 px-4 py-1.5 text-sm font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">
+          {skill}
+        </li>
+      ))}
+    </ul>
+
+    <h2 class="mt-12 text-2xl font-bold text-slate-900 dark:text-white">兴趣方向</h2>
+    <ul class="mt-6 flex flex-wrap gap-2">
+      {interests.map((interest) => (
+        <li class="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-700 dark:border-slate-700 dark:bg-[#1e293b] dark:text-slate-200">
+          {interest}
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
