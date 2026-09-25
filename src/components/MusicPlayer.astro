@@ -1,32 +1,57 @@
 ---
-// VHS-styled background music player.
+// Folder-based VHS background-music player.
 //
-// Behaviour:
-//   * Tries to autoplay on page load (browsers only allow this once the
-//     visitor has interacted with the site, so it falls back to starting on
-//     the first click / keypress / tap).
-//   * A visitor who pauses the music is remembered in localStorage, so the
-//     music never starts again uninvited for them.
-//   * Playback position and state survive page navigation within a tab.
+// Every audio file dropped into `src/assets/music/` is picked up
+// automatically at build time, sorted by filename, played in order and
+// looped. Name files `01-...`, `02-...` to control the order.
 //
-// Drop your audio file at `public/music/bgm.mp3` (or change SRC below).
-const SRC = '/music/bgm.mp3';
+// Behaviour for visitors:
+//   * Tries to autoplay on load; browsers block unmuted autoplay, so it
+//     falls back to starting on the first click / keypress / tap.
+//   * A visitor who pauses is remembered (localStorage) and is never
+//     started again automatically.
+//   * Track index + playback position survive page navigation in a tab.
+//
+// If the folder has no audio yet, the player renders nothing at all.
+const modules = import.meta.glob('/src/assets/music/*.{mp3,m4a,ogg,opus,wav,flac,aac}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+
+const tracks = Object.keys(modules)
+  .sort()
+  .map((path) => {
+    const file = path.split('/').pop() ?? path;
+    return {
+      src: modules[path],
+      title: file.replace(/\.[^.]+$/, '').replace(/^\d+[\s._-]+/, '') || file,
+    };
+  });
 ---
 
-<div id="bgm-player" class="bgm-player">
-  <audio id="bgm-audio" src={SRC} loop preload="auto"></audio>
-  <button
-    id="bgm-toggle"
-    type="button"
-    class="bgm-toggle"
-    aria-label="Play background music"
-    aria-pressed="false"
-    title="Background music (click to play / pause)"
-  >
-    <span id="bgm-icon" class="bgm-icon" aria-hidden="true">▶</span>
-    <span class="bgm-text">BGM</span>
-  </button>
-</div>
+{
+  tracks.length > 0 && (
+    <div id="bgm-player" class="bgm-player" data-playlist={JSON.stringify(tracks)}>
+      <audio id="bgm-audio" preload="auto" />
+      <button
+        id="bgm-toggle"
+        type="button"
+        class="bgm-toggle"
+        aria-label="Play background music"
+        aria-pressed="false"
+        title="Background music — click to play / pause"
+      >
+        <span id="bgm-icon" class="bgm-icon" aria-hidden="true">
+          ▶
+        </span>
+        <span id="bgm-track" class="bgm-track">
+          {tracks[0].title}
+        </span>
+      </button>
+    </div>
+  )
+}
 
 <style>
   .bgm-player {
@@ -39,7 +64,8 @@ const SRC = '/music/bgm.mp3';
   .bgm-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
+    max-width: min(74vw, 22rem);
     padding: 0.4rem 0.7rem;
     border: 2px solid var(--fg);
     background: var(--surface);
@@ -52,36 +78,71 @@ const SRC = '/music/bgm.mp3';
     transition: box-shadow 0.12s ease, transform 0.12s ease;
   }
 
-  .bgm-toggle:hover { box-shadow: 6px 6px 0 var(--blue); }
-  .bgm-toggle:active { box-shadow: 2px 2px 0 var(--blue); transform: translate(2px, 2px); }
-  .bgm-toggle.is-playing { box-shadow: 4px 4px 0 var(--red); }
-  .bgm-toggle.is-playing:hover { box-shadow: 6px 6px 0 var(--red); }
+  .bgm-toggle:hover {
+    box-shadow: 6px 6px 0 var(--blue);
+  }
+  .bgm-toggle:active {
+    box-shadow: 2px 2px 0 var(--blue);
+    transform: translate(2px, 2px);
+  }
+  .bgm-toggle.is-playing {
+    box-shadow: 4px 4px 0 var(--red);
+  }
+  .bgm-toggle.is-playing:hover {
+    box-shadow: 6px 6px 0 var(--red);
+  }
 
-  .bgm-icon { letter-spacing: 0.05em; }
-  .bgm-text { font-size: 1rem; letter-spacing: 0.08em; }
+  .bgm-icon {
+    flex: none;
+    letter-spacing: 0.05em;
+  }
 
-  @media (max-width: 640px) {
-    .bgm-text { display: none; }
+  .bgm-track {
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>
 
 <script is:inline>
   (function () {
+    var root = document.getElementById('bgm-player');
+    if (!root) return;
     var audio = document.getElementById('bgm-audio');
     var btn = document.getElementById('bgm-toggle');
     var icon = document.getElementById('bgm-icon');
+    var label = document.getElementById('bgm-track');
     if (!audio || !btn || !icon) return;
 
-    var DISABLED = 'bgm-disabled'; // localStorage — visitor explicitly turned music off
-    var PLAYING = 'bgm-playing'; // sessionStorage — currently playing
-    var TIME = 'bgm-time'; // sessionStorage — playback position
+    var tracks = [];
+    try {
+      tracks = JSON.parse(root.getAttribute('data-playlist') || '[]');
+    } catch (e) {
+      tracks = [];
+    }
+    if (!tracks.length) return;
+
+    var DISABLED = 'bgm-disabled'; // localStorage — visitor turned the music off
+    var INDEX = 'bgm-index'; // sessionStorage — current track
+    var TIME = 'bgm-time'; // sessionStorage — position in the current track
 
     function get(store, key) {
-      try { return store.getItem(key); } catch (e) { return null; }
+      try {
+        return store.getItem(key);
+      } catch (e) {
+        return null;
+      }
     }
     function set(store, key, value) {
-      try { store.setItem(key, value); } catch (e) {}
+      try {
+        store.setItem(key, value);
+      } catch (e) {}
     }
+
+    var index = parseInt(get(sessionStorage, INDEX) || '0', 10);
+    if (isNaN(index) || index < 0 || index >= tracks.length) index = 0;
 
     function paint(isPlaying) {
       icon.textContent = isPlaying ? '❚❚' : '▶';
@@ -89,15 +150,29 @@ const SRC = '/music/bgm.mp3';
       btn.setAttribute('aria-pressed', String(isPlaying));
       btn.setAttribute(
         'aria-label',
-        isPlaying ? 'Pause background music' : 'Play background music'
+        (isPlaying ? 'Pause' : 'Play') + ' background music'
       );
     }
 
-    // Resume the position from earlier in this tab session.
-    var saved = parseFloat(get(sessionStorage, TIME) || '0');
-    if (!isNaN(saved) && saved > 0) {
-      try { audio.currentTime = saved; } catch (e) {}
+    function show(i) {
+      index = i;
+      audio.src = tracks[i].src;
+      if (label) label.textContent = tracks[i].title;
+      set(sessionStorage, INDEX, String(i));
     }
+
+    // Restore the position within the current track once its metadata is ready.
+    var pendingTime = parseFloat(get(sessionStorage, TIME) || '0');
+    audio.addEventListener('loadedmetadata', function () {
+      if (!isNaN(pendingTime) && pendingTime > 0 && pendingTime < audio.duration) {
+        try {
+          audio.currentTime = pendingTime;
+        } catch (e) {}
+      }
+      pendingTime = 0;
+    });
+
+    show(index);
 
     function attempt() {
       var promise = audio.play();
@@ -143,15 +218,20 @@ const SRC = '/music/bgm.mp3';
     });
 
     audio.addEventListener('play', function () {
-      set(sessionStorage, PLAYING, '1');
       paint(true);
     });
     audio.addEventListener('pause', function () {
-      set(sessionStorage, PLAYING, '0');
       paint(false);
     });
     audio.addEventListener('timeupdate', function () {
       set(sessionStorage, TIME, String(audio.currentTime));
+    });
+
+    // Track finished → move to the next one, wrapping around the whole list.
+    audio.addEventListener('ended', function () {
+      show((index + 1) % tracks.length);
+      set(sessionStorage, TIME, '0');
+      if (get(localStorage, DISABLED) !== '1') attempt();
     });
 
     paint(!audio.paused);
