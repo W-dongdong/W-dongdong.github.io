@@ -4,12 +4,13 @@ import Base from '../layouts/Base.astro';
 const skills = [
   'Programming — C, C++, Python',
   'Embedded — bare-metal STM32, CAN / I2C / UART',
-  'Control — PID & cascade PID, LQR',
-  'ROS2 / Linux',
+  'Control — PID & cascade PID, LQR, SO(3) geometric control',
+  'ROS2 / PX4 / Linux',
   'FreeRTOS',
 ];
 
 const projects = [
+  { title: 'SO(3) Quadrotor Controller · PX4 / ROS 2 / Gazebo', summary: 'Rewrote the attitude and velocity loops as a ROS 2 offboard node: PID outer loop plus an SO(3) geometric attitude loop, with PX4 used only for mixing.' },
   { title: 'Robocon Robotics Competition · Core Member', summary: 'STM32-based low-level controller with PID motor group control and Mecanum-wheel kinematics.' },
   { title: 'Wheel-Legged Robot Simulation', summary: 'Webots simulation implementing LQR and VMC for self-balancing control.' },
   { title: 'STM32 BSP Library', summary: 'Lightweight Board Support Package in C/C++ covering CAN, I2C, and Mahony attitude estimation.' },
@@ -31,16 +32,16 @@ const honors = [
   <section class="mx-auto max-w-4xl px-4 py-14 sm:px-6">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 class="font-display text-3xl text-ink sm:text-4xl">WU Yandong</h1>
+        <h1 class="font-display text-2xl text-ink sm:text-3xl">WU Yandong</h1>
         <p class="mt-2 text-lg text-ink-muted">
           Electrical Engineering · Robotics / Embedded Systems / Control Systems
         </p>
       </div>
-      <a href="/MyCV.pdf" class="retro-btn retro-btn--primary">Download Résumé (PDF)</a>
+      <a href="/MyCV.pdf" class="btn btn--primary">Download Résumé (PDF)</a>
     </div>
-    <div class="rainbow-bar mt-6" aria-hidden="true"></div>
+    <div class="rule mt-6" aria-hidden="true"></div>
 
-    <div class="crt-text mt-6 flex flex-wrap gap-x-6 gap-y-2 text-lg text-ink-muted">
+    <div class="crt-text mt-6 flex flex-wrap gap-x-6 gap-y-2 text-base text-ink-muted">
       <span>Hong Kong SAR, China</span>
       <a href="mailto:dongdong7559@gmail.com" class="hover:text-retro-blue">
         dongdong7559@gmail.com
@@ -55,11 +56,11 @@ const honors = [
       </a>
     </div>
 
-    <h2 class="mt-12 font-display text-2xl text-ink">Education</h2>
-    <div class="retro-card retro-card--blue mt-4 p-5">
+    <h2 class="mt-12 font-display text-xl text-ink">Education</h2>
+    <div class="card mt-4 p-5">
       <div class="flex flex-wrap items-center justify-between gap-2">
-        <h3 class="font-display text-base text-ink">The Hong Kong Polytechnic University · Bachelor of Engineering in Electrical Engineering</h3>
-        <time class="crt-text text-lg text-ink-muted">Sept 2024 – Sept 2028</time>
+        <h3 class="text-base font-semibold text-ink">The Hong Kong Polytechnic University · Bachelor of Engineering in Electrical Engineering</h3>
+        <time class="crt-text text-base text-ink-muted">Sept 2024 – Sept 2028</time>
       </div>
       <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-muted">
         <li>GPA 3.54 / 4.3 · Year 3 Undergraduate</li>
@@ -68,29 +69,29 @@ const honors = [
       </ul>
     </div>
 
-    <h2 class="mt-12 font-display text-2xl text-ink">Projects &amp; Experience</h2>
+    <h2 class="mt-12 font-display text-xl text-ink">Projects &amp; Experience</h2>
     <ul class="mt-4 space-y-3">
       {projects.map((project) => (
-        <li class="retro-card retro-card--green px-5 py-3">
-          <span class="font-display text-sm text-ink">{project.title}</span>
+        <li class="card px-5 py-3">
+          <span class="text-sm font-semibold text-ink">{project.title}</span>
           <p class="mt-1 text-sm text-ink-muted">{project.summary}</p>
         </li>
       ))}
     </ul>
 
-    <h2 class="mt-12 font-display text-2xl text-ink">Skills</h2>
-    <ul class="mt-4 flex flex-wrap gap-2">
+    <h2 class="mt-12 font-display text-xl text-ink">Skills</h2>
+    <ul class="mt-4 flex flex-wrap gap-1.5">
       {skills.map((skill) => (
-        <li class="crt-tag">{skill}</li>
+        <li class="tag">{skill}</li>
       ))}
     </ul>
 
-    <h2 class="mt-12 font-display text-2xl text-ink">Honours &amp; Awards</h2>
+    <h2 class="mt-12 font-display text-xl text-ink">Honours &amp; Awards</h2>
     <ul class="mt-4 space-y-3">
       {honors.map((honor) => (
-        <li class="retro-card retro-card--amber flex flex-wrap items-center justify-between gap-2 px-5 py-3">
-          <span class="font-display text-sm text-ink">{honor.title}</span>
-          <time class="crt-text text-lg text-ink-muted">{honor.date}</time>
+        <li class="card flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+          <span class="text-sm font-semibold text-ink">{honor.title}</span>
+          <time class="crt-text text-base text-ink-muted">{honor.date}</time>
         </li>
       ))}
     </ul>

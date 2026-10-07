@@ -4,7 +4,7 @@ summary: "Developed a lightweight Board Support Package in C/C++ for STM32, cove
 date: 2026-06-30
 tags: ["STM32", "C++", "Embedded"]
 repo: "https://github.com/W-dongdong/stm32_bsp_lib"
-featured: true
+featured: false
 status: "Maintained"
 ---
 

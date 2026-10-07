@@ -25,13 +25,21 @@ const modules = import.meta.glob('/src/assets/music/*.{mp3,m4a,ogg,opus,wav,flac
   import: 'default',
 }) as Record<string, string>;
 
+// Display names for files whose name makes a poor on-screen title, keyed by
+// the filename without its extension.
+const TITLE_OVERRIDES: Record<string, string> = {
+  '5-4': '5/4',
+};
+
 const tracks = Object.keys(modules)
   .sort()
   .map((path) => {
     const file = path.split('/').pop() ?? path;
+    const base = file.replace(/\.[^.]+$/, '');
+    const stripped = base.replace(/^\d+[\s._-]+/, '') || base;
     return {
       src: modules[path],
-      title: file.replace(/\.[^.]+$/, '').replace(/^\d+[\s._-]+/, '') || file,
+      title: TITLE_OVERRIDES[base] ?? stripped,
     };
   });
 ---
@@ -153,13 +161,13 @@ const tracks = Object.keys(modules)
     gap: 0.35rem;
     max-width: min(88vw, 26rem);
     padding: 0.3rem 0.35rem;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     background: var(--surface);
-    box-shadow: 4px 4px 0 var(--blue);
-    transition: box-shadow 0.12s ease;
+    box-shadow: 2px 2px 0 var(--line);
+    transition: box-shadow 0.12s ease, border-color 0.12s ease;
   }
   .bgm-player[data-playing='true'] .bgm-bar {
-    box-shadow: 4px 4px 0 var(--red);
+    border-color: var(--accent);
   }
 
   .bgm-btn {
@@ -167,18 +175,18 @@ const tracks = Object.keys(modules)
     align-items: center;
     justify-content: center;
     flex: none;
-    width: 2rem;
-    height: 2rem;
-    border: 2px solid var(--fg);
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--line);
     background: var(--bg);
-    color: var(--fg);
+    color: var(--muted);
     cursor: pointer;
-    transition: background 0.12s ease, color 0.12s ease;
+    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
   }
   .bgm-btn:hover,
   .bgm-btn[aria-expanded='true'] {
-    background: var(--blue);
-    color: var(--bg);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .bgm-pi,
@@ -203,6 +211,7 @@ const tracks = Object.keys(modules)
     font-family: var(--font-crt);
     font-size: 1rem;
     letter-spacing: 0.05em;
+    color: var(--fg);
     max-width: 13rem;
     padding: 0 0.15rem;
     overflow: hidden;
@@ -214,19 +223,20 @@ const tracks = Object.keys(modules)
     width: min(88vw, 26rem);
     max-height: 16rem;
     overflow-y: auto;
-    border: 2px solid var(--fg);
+    border: 1px solid var(--line);
     background: var(--surface);
-    box-shadow: 4px 4px 0 var(--amber);
+    box-shadow: 2px 2px 0 var(--line);
   }
   .bgm-list-panel[hidden] { display: none; }
 
   .bgm-list-head {
     margin: 0;
     padding: 0.35rem 0.6rem;
-    border-bottom: 2px solid var(--fg);
+    border-bottom: 1px solid var(--line);
     font-family: var(--font-crt);
     font-size: 0.95rem;
     letter-spacing: 0.14em;
+    color: var(--muted);
   }
 
   .bgm-list {
@@ -248,10 +258,10 @@ const tracks = Object.keys(modules)
     text-align: left;
     cursor: pointer;
   }
-  .bgm-item:hover { background: var(--bg); }
+  .bgm-item:hover { background: var(--line-soft); }
   .bgm-item.is-active {
-    background: var(--blue);
-    color: var(--bg);
+    color: var(--accent);
+    box-shadow: inset 2px 0 0 var(--accent);
   }
 
   .bgm-item-num {

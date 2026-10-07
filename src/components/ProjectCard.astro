@@ -16,28 +16,18 @@ interface Props {
 
 const { project } = Astro.props;
 const dateStr = project.data.date.toISOString().slice(0, 10);
-
-// Deterministic retro accent per project (stable across builds).
-const accents = ['red', 'blue', 'amber', 'green'] as const;
-let hash = 0;
-for (const ch of project.id) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
-const accent = accents[hash % accents.length];
-const accentVar = `var(--${accent})`;
 ---
 
-<a
-  href={`/projects/${project.id}`}
-  class={`retro-card retro-card--${accent} group flex h-full flex-col overflow-hidden`}
->
-  <div class="h-1.5 w-full" style={`background: ${accentVar}`} aria-hidden="true"></div>
+<a href={`/projects/${project.id}`} class="card group flex h-full flex-col overflow-hidden">
+  <div class="h-0.5 w-full bg-retro-blue" aria-hidden="true"></div>
 
   <div class="flex flex-1 flex-col p-5">
-    <div class="crt-text flex items-center justify-between gap-2 text-lg leading-none text-ink-muted">
+    <div class="crt-text flex items-center justify-between gap-2 text-sm leading-none text-ink-muted">
       <time datetime={dateStr}>{dateStr}</time>
       {project.data.status && <span>{project.data.status}</span>}
     </div>
 
-    <h3 class="retro-card-title mt-2 font-display text-lg leading-snug text-ink transition-colors">
+    <h3 class="mt-2.5 font-display text-base leading-snug text-ink transition-colors group-hover:text-retro-blue">
       {project.data.title}
     </h3>
 
@@ -46,7 +36,7 @@ const accentVar = `var(--${accent})`;
     )}
 
     {project.data.tags.length > 0 && (
-      <div class="mt-4 flex flex-wrap gap-2">
+      <div class="mt-4 flex flex-wrap gap-1.5">
         {project.data.tags.map((tag) => (
           <TagBadge tag={tag} />
         ))}

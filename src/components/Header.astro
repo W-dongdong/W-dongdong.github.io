@@ -16,33 +16,27 @@ function isActive(href: string) {
 }
 ---
 
-<header class="sticky top-0 z-50 w-full border-b-2 border-ink bg-cream/95 backdrop-blur">
+<header class="sticky top-0 z-50 w-full border-b border-line bg-cream/90 backdrop-blur">
   <nav
     class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6"
     aria-label="Main navigation"
   >
-    <a href="/" class="group flex items-center gap-3">
-      <span class="osd-badge text-retro-red">▶ PLAY</span>
-      <span class="font-display text-lg tracking-tight text-ink sm:text-xl">WU Yandong</span>
+    <a href="/" class="flex items-center gap-3">
+      <span class="font-display text-base tracking-tight text-ink sm:text-lg">WU Yandong</span>
     </a>
 
-    <div class="flex items-center gap-3">
-      <span class="osd-badge hidden text-retro-red lg:inline-flex">
-        <span class="text-retro-red">●</span> REC
-      </span>
-      <span id="osd-clock" class="crt-text hidden text-2xl leading-none text-ink sm:inline-block">00:00:00</span>
-
-      <ul class="hidden items-center gap-1 md:flex">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <ul class="hidden items-center gap-6 md:flex">
         {nav.map((item) => (
           <li>
             <a
               href={item.href}
               aria-current={isActive(item.href) ? 'page' : undefined}
               class:list={[
-                'crt-text block px-3 py-1.5 text-xl leading-none transition-colors',
+                'crt-text block border-b text-base leading-tight transition-colors',
                 isActive(item.href)
-                  ? 'border border-ink bg-retro-blue text-cream'
-                  : 'text-ink-muted hover:bg-cream-2 hover:text-ink',
+                  ? 'border-retro-blue text-retro-blue'
+                  : 'border-transparent text-ink-muted hover:border-line-strong hover:text-ink',
               ]}
             >
               {item.label}
@@ -56,7 +50,7 @@ function isActive(href: string) {
       <button
         type="button"
         id="menu-toggle"
-        class="inline-flex items-center justify-center border border-ink p-2 text-ink transition-colors hover:bg-cream-2 md:hidden"
+        class="inline-flex items-center justify-center border border-line p-2 text-ink transition-colors hover:bg-cream-2 md:hidden"
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -65,9 +59,9 @@ function isActive(href: string) {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke-width="2"
+          stroke-width="1.6"
           stroke="currentColor"
-          class="h-6 w-6"
+          class="h-5 w-5"
           aria-hidden="true"
         >
           <path
@@ -80,7 +74,7 @@ function isActive(href: string) {
     </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden border-t-2 border-ink md:hidden">
+  <div id="mobile-menu" class="hidden border-t border-line md:hidden">
     <ul class="flex flex-col gap-1 px-4 py-3">
       {nav.map((item) => (
         <li>
@@ -88,9 +82,9 @@ function isActive(href: string) {
             href={item.href}
             aria-current={isActive(item.href) ? 'page' : undefined}
             class:list={[
-              'crt-text block px-3 py-2 text-xl leading-none transition-colors',
+              'crt-text block px-2 py-1.5 text-base transition-colors',
               isActive(item.href)
-                ? 'border border-ink bg-retro-blue text-cream'
+                ? 'text-retro-blue'
                 : 'text-ink-muted hover:bg-cream-2 hover:text-ink',
             ]}
           >
@@ -100,28 +94,11 @@ function isActive(href: string) {
       ))}
     </ul>
   </div>
-
-  <div class="rainbow-bar" aria-hidden="true"></div>
 </header>
 
 <script>
-  function renderClock() {
-    var clock = document.getElementById('osd-clock');
-    if (!clock) return;
-    var d = new Date();
-    var pad = function (n) { return String(n).padStart(2, '0'); };
-    clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
-  }
-
-  // One persistent timer updates whichever #osd-clock element is currently in
-  // the DOM, so it keeps ticking across ClientRouter page transitions.
-  renderClock();
-  setInterval(renderClock, 1000);
-  // ClientRouter swaps the header on navigation; re-render the clock on
-  // `astro:after-swap` so it never shows the server-rendered 00:00:00.
-  document.addEventListener('astro:after-swap', renderClock);
-
-  // Mobile menu: delegated, so it also works on the re-rendered header.
+  // Mobile menu: delegated, so it also works on the header re-rendered by
+  // ClientRouter on navigation.
   document.addEventListener('click', function (event) {
     var target = event.target;
     if (!(target instanceof Element)) return;

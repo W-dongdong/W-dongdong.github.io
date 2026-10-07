@@ -14,27 +14,36 @@
 
 /* ------------------------------------------------------------------ */
 /*  Semantic palette (VHS paper / CRT dark room)                       */
+/*                                                                     */
+/*  Same paper-and-phosphor family as before, pulled back: one accent   */
+/*  colour instead of four, hairline rules instead of rainbow bars.     */
 /* ------------------------------------------------------------------ */
 :root {
-  --bg: #f2e8d5;
-  --surface: #f8f1e0;
-  --fg: #171512;
-  --muted: #5f584a;
-  --blue: #1a3a84;
-  --red: #c63b2e;
-  --amber: #e8a020;
+  --bg: #f4efe4;
+  --surface: #fcfaf5;
+  --fg: #1c1a17;
+  --muted: #6a6357;
+  --line: #ddd5c5;
+  --line-soft: #eae4d7;
+  --line-strong: #c7bda8;
+  --accent: #2f4f9e;
+  --red: #b4453a;
+  --amber: #a97a15;
   --green: #2e7d5b;
 }
 
 [data-theme="dark"] {
-  --bg: #0a0a12;
-  --surface: #14141f;
-  --fg: #e8e4d8;
-  --muted: #9a94a8;
-  --blue: #5b8cff;
-  --red: #ff5c4d;
-  --amber: #ffb347;
-  --green: #3fc380;
+  --bg: #0c0c11;
+  --surface: #15151d;
+  --fg: #e7e3d9;
+  --muted: #968fa3;
+  --line: #2b2b38;
+  --line-soft: #21212c;
+  --line-strong: #3b3b4c;
+  --accent: #8aa4ff;
+  --red: #d9635a;
+  --amber: #d9a44a;
+  --green: #4fb98a;
 }
 
 /* ------------------------------------------------------------------ */
@@ -45,7 +54,10 @@
   --color-cream-2: var(--surface);
   --color-ink: var(--fg);
   --color-ink-muted: var(--muted);
-  --color-retro-blue: var(--blue);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+  --color-retro-blue: var(--accent);
   --color-retro-red: var(--red);
   --color-retro-amber: var(--amber);
   --color-retro-green: var(--green);
@@ -63,15 +75,15 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg);
   color: var(--fg);
-  background-image: radial-gradient(rgba(23, 21, 18, 0.045) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background-image: radial-gradient(rgba(28, 26, 23, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 [data-theme="dark"] body {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
 }
 
 ::selection {
-  background: var(--red);
+  background: var(--accent);
   color: var(--bg);
 }
 
@@ -79,152 +91,96 @@ body {
 /*  Retro utility classes                                              */
 /* ------------------------------------------------------------------ */
 
-/* 1. Classic six-colour rainbow bar */
-.rainbow-bar {
+/* 1. Hairline rule with a short accent segment at the left.
+      Replaces the six-colour rainbow bar. */
+.rule {
   display: block;
-  height: 5px;
+  position: relative;
+  height: 1px;
   width: 100%;
-  background: linear-gradient(
-    90deg,
-    #e53935,
-    #fb8c00,
-    #fdd835,
-    #43a047,
-    #1e88e5,
-    #8e24aa
-  );
+  background: var(--line);
 }
-
-/* 2. CRT scanline overlay */
-.scanlines { position: relative; }
-.scanlines::after {
+.rule::before {
   content: "";
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(23, 21, 18, 0.05) 0px,
-    rgba(23, 21, 18, 0.05) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-}
-[data-theme="dark"] .scanlines::after {
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.05) 0px,
-    rgba(255, 255, 255, 0.05) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  inset: 0 auto 0 0;
+  width: 2.5rem;
+  background: var(--accent);
 }
 
-/* 3. SMPTE colour bars (7 vertical segments) */
-.color-bars {
-  display: block;
-  width: 100%;
-  height: 10px;
-  background: linear-gradient(
-    90deg,
-    #c0c0c0 0 14.28%,
-    #c0c000 14.28% 28.57%,
-    #00c0c0 28.57% 42.85%,
-    #00c000 42.85% 57.14%,
-    #c000c0 57.14% 71.42%,
-    #c00000 71.42% 85.71%,
-    #0000c0 85.71% 100%
-  );
-}
-
-/* 4. Hard border + offset (mis-registered) shadow */
-.retro-card {
-  border: 2px solid var(--fg);
+/* 2. Card: hard border, small hard offset shadow */
+.card {
+  border: 1px solid var(--line);
   background-color: var(--surface);
-  box-shadow: 6px 6px 0 var(--accent, var(--red));
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 3px 3px 0 var(--line);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
-.retro-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 8px 8px 0 var(--accent, var(--red));
+.card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--line);
+  border-color: var(--line-strong);
 }
-.retro-card--red   { --accent: var(--red); }
-.retro-card--blue  { --accent: var(--blue); }
-.retro-card--amber { --accent: var(--amber); }
-.retro-card--green { --accent: var(--green); }
-.retro-card:hover .retro-card-title { color: var(--blue); }
 
-/* 5. CRT / VHS phosphor text */
+/* 3. Phosphor/terminal text — used for metadata only, never body copy */
 .crt-text {
   font-family: var(--font-crt);
-  letter-spacing: 0.03em;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
-}
-[data-theme="dark"] .crt-text {
-  text-shadow: 0 0 5px currentColor;
+  letter-spacing: 0.04em;
 }
 
-/* VHS on-screen-display badge (PLAY / REC / timestamps) */
-.osd-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  font-family: var(--font-crt);
-  font-size: 1rem;
-  line-height: 1;
-  letter-spacing: 0.06em;
-  padding: 0.3em 0.55em;
-  border: 1px solid currentColor;
-}
-
-/* Retro hard-edged button */
-.retro-btn {
+/* 4. Hard-edged button */
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: 2px solid var(--fg);
+  border: 1px solid var(--fg);
   background-color: var(--surface);
   color: var(--fg);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.8125rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.55rem 1.1rem;
-  box-shadow: 4px 4px 0 var(--blue);
+  padding: 0.5rem 1rem;
+  box-shadow: 2px 2px 0 var(--line-strong);
   transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
   cursor: pointer;
 }
-.retro-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--blue);
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--line-strong);
 }
-.retro-btn:active {
+.btn:active {
   transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0 var(--blue);
+  box-shadow: 1px 1px 0 var(--line-strong);
 }
-.retro-btn--primary {
-  background-color: var(--red);
+.btn--primary {
+  background-color: var(--fg);
   color: var(--bg);
-  box-shadow: 4px 4px 0 var(--fg);
+  box-shadow: 2px 2px 0 var(--accent);
 }
-.retro-btn--primary:hover { box-shadow: 6px 6px 0 var(--fg); }
-.retro-btn--primary:active { box-shadow: 2px 2px 0 var(--fg); }
+.btn--primary:hover { box-shadow: 3px 3px 0 var(--accent); }
+.btn--primary:active { box-shadow: 1px 1px 0 var(--accent); }
 
-/* CRT bracket tag / label */
-.crt-tag {
+/* 5. Bracket tag */
+.tag {
   display: inline-flex;
   align-items: center;
   font-family: var(--font-crt);
-  font-size: 1.05rem;
-  line-height: 1.1;
-  padding: 0.15rem 0.5rem;
-  border: 1px solid var(--fg);
-  color: var(--fg);
-  background-color: var(--surface);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--line);
+  color: var(--muted);
 }
-.crt-tag::before { content: "["; margin-right: 0.3rem; opacity: 0.7; }
-.crt-tag::after  { content: "]"; margin-left: 0.3rem; opacity: 0.7; }
+.tag::before { content: "["; margin-right: 0.28rem; opacity: 0.55; }
+.tag::after  { content: "]"; margin-left: 0.28rem; opacity: 0.55; }
+
+/* 6. Photo frame */
+.avatar {
+  border: 1px solid var(--line);
+  background-color: var(--line-soft);
+  box-shadow: 3px 3px 0 var(--line);
+}
 
 /* ------------------------------------------------------------------ */
 /*  Article / markdown prose (project detail pages)                    */
@@ -249,7 +205,7 @@ body {
 .blog-prose h4 { font-size: 1.125rem; margin: 1.5rem 0 0.75rem; }
 .blog-prose p { margin: 1rem 0; }
 .blog-prose a {
-  color: var(--blue);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -264,7 +220,7 @@ body {
 .blog-prose li > ul,
 .blog-prose li > ol { margin: 0.375rem 0; }
 .blog-prose blockquote {
-  border-left: 4px solid var(--blue);
+  border-left: 2px solid var(--accent);
   padding-left: 1rem;
   margin: 1.25rem 0;
   color: var(--muted);
@@ -273,20 +229,19 @@ body {
 .blog-prose code {
   font-family: var(--font-mono);
   font-size: 0.875em;
-  background: var(--surface);
-  color: var(--red);
+  background: var(--line-soft);
+  color: var(--fg);
   padding: 0.15em 0.4em;
-  border: 1px solid var(--fg);
+  border: 1px solid var(--line);
 }
 .blog-prose pre {
-  background: #0f172a;
+  background: #12121a;
   color: #e2e8f0;
   padding: 1rem 1.25rem;
   overflow-x: auto;
   margin: 1.25rem 0;
   font-size: 0.875rem;
-  border: 2px solid var(--fg);
-  box-shadow: 5px 5px 0 var(--blue);
+  border: 1px solid var(--line);
 }
 .blog-prose pre code {
   background: transparent;
@@ -298,8 +253,7 @@ body {
 .blog-prose img {
   margin: 1.25rem 0;
   max-width: 100%;
-  border: 2px solid var(--fg);
-  box-shadow: 6px 6px 0 var(--blue);
+  border: 1px solid var(--line);
 }
 .blog-prose table {
   width: 100%;
@@ -309,15 +263,15 @@ body {
 }
 .blog-prose th,
 .blog-prose td {
-  border: 1px solid var(--fg);
+  border: 1px solid var(--line);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
 .blog-prose th { background: var(--surface); }
 .blog-prose hr {
   border: 0;
-  height: 5px;
-  background: linear-gradient(90deg, #e53935, #fb8c00, #fdd835, #43a047, #1e88e5, #8e24aa);
+  height: 1px;
+  background: var(--line);
   margin: 2rem 0;
 }
 .blog-prose .katex-display {
