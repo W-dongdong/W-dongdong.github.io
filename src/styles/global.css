@@ -43,7 +43,10 @@
 [data-theme="dark"] {
   --bg: #0c0c11;
   --surface: #15151d;
-  --surface-2: #1a1713; /* warm ink — the profile rail */
+  /* Deliberately the same as --surface: a large warm-brown panel behind the
+     portrait reads as a fault on a dark page, not as an accent. The rail only
+     carries colour in the light theme. */
+  --surface-2: #15151d;
   --fg: #e7e3d9;
   --muted: #968fa3;
   --line: #2b2b38;
@@ -118,15 +121,12 @@ body {
   background: var(--accent-2);
 }
 
-/* Solid colour block across the top of a project card. The two inks
-   alternate down the list so a grid of cards reads as a rhythm. */
+/* Solid colour block across the top of a project card — one ink for every
+   card, so the grid reads as a repeated mark rather than a colour code. */
 .accent-bar {
   display: block;
   width: 100%;
   background: var(--accent);
-}
-.accent-bar--alt {
-  background: var(--accent-2);
 }
 
 /* 2. Eyebrow label — section number in terminal type above a heading */

@@ -31,7 +31,7 @@ const projects = (await getCollection('projects'))
             <div class="mt-6 flex flex-col gap-4">
               {projects.map((p, i) => (
                 <div data-reveal style={`transition-delay:${i * 80}ms`}>
-                  <ProjectCard project={p} layout="row" index={i} />
+                  <ProjectCard project={p} layout="row" />
                 </div>
               ))}
             </div>
