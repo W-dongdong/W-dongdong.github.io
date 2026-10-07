@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
 
 const skills = [
   'C / C++ / Python',
@@ -21,21 +22,22 @@ const interests = [
   title="About — WU Yandong"
   description="WU Yandong, an Electrical Engineering undergraduate at The Hong Kong Polytechnic University, focused on robotics, embedded systems, and control systems."
 >
-  <section class="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+  <section class="mx-auto max-w-5xl px-4 py-14 sm:px-6">
     <header>
-      <h1 class="font-display text-2xl text-ink sm:text-3xl">About Me</h1>
-      <div class="rule mt-3" aria-hidden="true"></div>
-      <p class="mt-6 text-lg leading-relaxed text-ink-muted">
+      <p class="eyebrow">Profile</p>
+      <h1 class="mt-3 font-display text-2xl text-ink sm:text-3xl">About Me</h1>
+      <div class="rule mt-4" aria-hidden="true"></div>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-muted">
         I'm WU Yandong, an Electrical Engineering undergraduate at The Hong Kong Polytechnic University.
         My work centers on robotics, embedded systems, and control systems — from low-level drivers to
         high-level control, I enjoy turning theoretical algorithms into working hardware.
       </p>
     </header>
 
-    <h2 class="mt-12 font-display text-xl text-ink">Education</h2>
+    <SectionHeading index="01" title="Education" class="mt-14" />
     <ol class="mt-6 space-y-6 border-l border-line pl-6">
       <li class="relative">
-        <span class="absolute -left-[27px] top-2 h-2.5 w-2.5 border border-line-strong bg-cream"></span>
+        <span class="absolute -left-[27px] top-2 h-2.5 w-2.5 rounded-full border border-line-strong bg-cream"></span>
         <div class="card p-5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h3 class="text-base font-semibold text-ink">The Hong Kong Polytechnic University · BEng in Electrical Engineering</h3>
@@ -49,7 +51,7 @@ const interests = [
       </li>
     </ol>
 
-    <h2 class="mt-12 font-display text-xl text-ink">Credentials</h2>
+    <SectionHeading index="02" title="Credentials" class="mt-14" />
     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div class="card p-5">
         <h3 class="text-base font-semibold text-ink">Minor</h3>
@@ -61,14 +63,14 @@ const interests = [
       </div>
     </div>
 
-    <h2 class="mt-12 font-display text-xl text-ink">Skills</h2>
+    <SectionHeading index="03" title="Skills" class="mt-14" />
     <ul class="mt-6 flex flex-wrap gap-1.5">
       {skills.map((skill) => (
         <li class="tag">{skill}</li>
       ))}
     </ul>
 
-    <h2 class="mt-12 font-display text-xl text-ink">Research &amp; Interest Directions</h2>
+    <SectionHeading index="04" title="Research & Interest Directions" class="mt-14" />
     <ul class="mt-6 flex flex-wrap gap-1.5">
       {interests.map((interest) => (
         <li class="tag">{interest}</li>

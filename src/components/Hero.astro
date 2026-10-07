@@ -6,26 +6,24 @@ const directions = ['Robotics', 'Embedded Systems', 'Control Systems'];
 ---
 
 <section class="card p-6">
-  <div class="flex items-center gap-5">
-    <Image
-      src={profile}
-      alt="Portrait of WU Yandong"
-      width={192}
-      height={192}
-      densities={[1, 2]}
-      class="avatar h-24 w-24 flex-none object-cover"
-      loading="eager"
-    />
-    <div>
-      <h1 class="font-display text-2xl leading-tight text-ink">WU Yandong</h1>
-      <p class="crt-text mt-1.5 text-base leading-tight text-ink-muted">
-        The Hong Kong Polytechnic University
-      </p>
-      <p class="crt-text text-base leading-tight text-ink-muted">
-        Bachelor of Engineering in Electrical Engineering
-      </p>
-    </div>
-  </div>
+  <Image
+    src={profile}
+    alt="Portrait of WU Yandong"
+    width={192}
+    height={192}
+    densities={[1, 2]}
+    class="avatar h-24 w-24 object-cover"
+    loading="eager"
+  />
+
+  <h1 class="mt-4 font-display text-2xl leading-tight text-ink">WU Yandong</h1>
+
+  <p class="crt-text mt-2 text-base leading-snug text-ink-muted">
+    The Hong Kong Polytechnic University
+  </p>
+  <p class="crt-text text-base leading-snug text-ink-muted">
+    Bachelor of Engineering in Electrical Engineering
+  </p>
 
   <div class="mt-5 flex flex-wrap gap-1.5">
     {directions.map((d) => (

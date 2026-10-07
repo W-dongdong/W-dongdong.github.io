@@ -12,15 +12,16 @@ const projects = (await getCollection('projects')).sort(
   title="Projects — WU Yandong"
   description="Projects by WU Yandong: hands-on work in robotics, embedded systems, and control systems."
 >
-  <section class="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-    <h1 class="font-display text-2xl text-ink sm:text-3xl">Projects</h1>
-    <div class="rule mt-3" aria-hidden="true"></div>
-    <p class="mt-6 text-lg text-ink-muted">
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <p class="eyebrow">Index</p>
+    <h1 class="mt-3 font-display text-2xl text-ink sm:text-3xl">Projects</h1>
+    <div class="rule mt-4" aria-hidden="true"></div>
+    <p class="mt-6 max-w-2xl text-lg text-ink-muted">
       Hands-on work in robotics, embedded systems, and control systems.
     </p>
 
     {projects.length > 0 ? (
-      <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p) => (
           <ProjectCard project={p} />
         ))}

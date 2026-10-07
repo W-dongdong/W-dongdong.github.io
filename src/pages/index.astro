@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects'))
@@ -14,47 +15,54 @@ const projects = (await getCollection('projects'))
   title="WU Yandong — Robotics / Embedded Systems / Control Systems"
   description="The Hong Kong Polytechnic University · Electrical Engineering. Robotics, embedded systems, and control systems — the personal site of WU Yandong."
 >
-  <section class="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start">
-      <!-- Top-left profile block -->
-      <aside>
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start lg:gap-14">
+      <!-- Profile rail -->
+      <aside class="lg:sticky lg:top-24">
         <Hero />
       </aside>
 
       <!-- Featured projects + contact -->
-      <div class="flex flex-col gap-10">
+      <div class="flex flex-col gap-14">
         <section>
-          <div class="flex items-end justify-between gap-4">
-            <h2 class="font-display text-xl text-ink">Featured Projects</h2>
-            <a href="/projects" class="crt-text text-base text-retro-blue hover:underline">View all →</a>
-          </div>
-          <div class="rule mt-3" aria-hidden="true"></div>
+          <SectionHeading index="01" title="Featured Projects" />
+
           {projects.length > 0 ? (
-            <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div class="mt-6 flex flex-col gap-4">
               {projects.map((p) => (
-                <ProjectCard project={p} />
+                <ProjectCard project={p} layout="row" />
               ))}
             </div>
           ) : (
             <p class="mt-6 text-sm text-ink-muted">No projects yet.</p>
           )}
+
+          <a
+            href="/projects"
+            class="crt-text mt-5 inline-block text-base text-retro-blue hover:underline"
+          >
+            All projects →
+          </a>
         </section>
 
-        <section class="card p-8 text-center">
-          <h2 class="font-display text-xl text-ink">Get in Touch</h2>
-          <p class="mt-2 text-ink-muted">
-            I'm open to collaboration and new ideas — feel free to reach out.
-          </p>
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <a href="mailto:dongdong7559@gmail.com" class="btn btn--primary">Send Email</a>
-            <a
-              href="https://github.com/W-dongdong"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn"
-            >
-              GitHub
-            </a>
+        <section>
+          <SectionHeading index="02" title="Get in Touch" />
+
+          <div class="card mt-6 flex flex-col items-start gap-5 p-8 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-ink-muted">
+              I'm open to collaboration and new ideas — feel free to reach out.
+            </p>
+            <div class="flex flex-none flex-wrap gap-3">
+              <a href="mailto:dongdong7559@gmail.com" class="btn btn--primary">Send Email</a>
+              <a
+                href="https://github.com/W-dongdong"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn"
+              >
+                GitHub
+              </a>
+            </div>
           </div>
         </section>
       </div>

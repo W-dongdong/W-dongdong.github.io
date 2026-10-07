@@ -1,0 +1,32 @@
+---
+// Live local time for the visitor, in the site's terminal type.
+// Decorative, so it is hidden from assistive tech.
+---
+
+<span
+  id="site-clock"
+  class="hidden items-center gap-2 sm:inline-flex"
+  aria-hidden="true"
+>
+  <span class="h-1.5 w-1.5 rounded-full bg-retro-blue"></span>
+  <span data-time class="crt-text text-base leading-none text-ink-muted">--:--:--</span>
+</span>
+
+<script>
+  var pad = function (n: number) {
+    return String(n).padStart(2, '0');
+  };
+
+  function renderClock() {
+    var out = document.querySelector('#site-clock [data-time]');
+    if (!out) return;
+    var d = new Date();
+    out.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+
+  // One persistent timer updates whichever clock element is currently in the
+  // DOM, so it keeps ticking across ClientRouter page transitions.
+  renderClock();
+  setInterval(renderClock, 1000);
+  document.addEventListener('astro:after-swap', renderClock);
+</script>
