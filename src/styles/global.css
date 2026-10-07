@@ -202,12 +202,13 @@ body {
   box-shadow: 1px 1px 0 var(--line-strong);
 }
 .btn--primary {
-  background-color: var(--fg);
+  background-color: var(--accent);
+  border-color: var(--accent);
   color: var(--bg);
-  box-shadow: 2px 2px 0 var(--accent);
+  box-shadow: 2px 2px 0 var(--line-strong);
 }
-.btn--primary:hover { box-shadow: 3px 3px 0 var(--accent); }
-.btn--primary:active { box-shadow: 1px 1px 0 var(--accent); }
+.btn--primary:hover { box-shadow: 3px 3px 0 var(--line-strong); }
+.btn--primary:active { box-shadow: 1px 1px 0 var(--line-strong); }
 
 /* 6. Bracket tag */
 .tag {
@@ -276,22 +277,6 @@ body {
   70%, 100% { transform: scale(2.8); opacity: 0; }
 }
 
-/* Reading-progress hairline under the sticky header */
-.progress {
-  position: absolute;
-  inset: auto 0 -1px 0;
-  height: 2px;
-  overflow: hidden;
-}
-.progress > span {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform 0.1s linear;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .reveal-ready [data-reveal] {
     opacity: 1;
@@ -299,7 +284,6 @@ body {
     transition: none;
   }
   .pulse-dot::after { animation: none; }
-  .progress > span { transition: none; }
 }
 
 /* ------------------------------------------------------------------ */
