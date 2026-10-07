@@ -23,9 +23,7 @@ function isActive(href: string) {
     aria-label="Main navigation"
   >
     <a href="/" class="flex min-w-0 items-center" aria-label="WU Yandong — home">
-      <span class="crt-text truncate text-sm text-ink" aria-hidden="true">
-        <span class="greeting-line" data-greeting>Hello, welcome.</span><span class="caret"></span>
-      </span>
+      <span class="crt-text truncate text-sm text-ink" aria-hidden="true">Welcome :)</span>
     </a>
 
     <div class="flex items-center gap-2 sm:gap-4">
@@ -120,34 +118,4 @@ function isActive(href: string) {
     btn.setAttribute('aria-expanded', String(open));
     btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
   });
-
-  // --- Rotating greeting ------------------------------------------------
-  // The line the visitor lands on is the one written into the markup, so it
-  // still reads as a greeting with JavaScript switched off.
-  var GREETINGS = [
-    'Hello, welcome.',
-    "Glad you're here.",
-    'Nice to meet you.',
-    'Make yourself at home.',
-  ];
-
-  var reduceMotion =
-    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (!reduceMotion) {
-    var next = 1;
-
-    setInterval(function () {
-      // Re-query every tick: the header is replaced on navigation.
-      var line = document.querySelector('[data-greeting]');
-      if (!line) return;
-
-      line.classList.add('is-out');
-      window.setTimeout(function () {
-        line.textContent = GREETINGS[next % GREETINGS.length];
-        next += 1;
-        line.classList.remove('is-out');
-      }, 320);
-    }, 4200);
-  }
 </script>
