@@ -28,7 +28,7 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
 
   {layout === 'grid' ? (
     <div class="flex flex-1 flex-col p-5">
-      <div class="crt-text flex items-center justify-between gap-2 text-sm leading-none text-ink-muted">
+      <div class="crt-text flex items-center justify-between gap-2 text-xs leading-none text-ink-muted">
         <time datetime={dateStr}>{dateStr}</time>
         {project.data.status && <span>{project.data.status}</span>}
       </div>
@@ -51,7 +51,7 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
     </div>
   ) : (
     <div class="flex flex-1 flex-col gap-3 p-5 sm:flex-row sm:gap-6">
-      <div class="crt-text flex flex-none items-baseline gap-3 text-sm leading-none text-ink-muted sm:w-28 sm:flex-col sm:items-start sm:gap-1">
+      <div class="crt-text flex flex-none items-baseline gap-3 text-xs leading-none text-ink-muted sm:w-28 sm:flex-col sm:items-start sm:gap-1.5">
         <time datetime={dateStr}>{dateStr}</time>
         {project.data.status && <span>{project.data.status}</span>}
       </div>
@@ -75,7 +75,7 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
       </div>
 
       <span
-        class="hidden flex-none text-ink-muted transition-colors group-hover:text-retro-blue sm:block"
+        class="hidden flex-none text-ink-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-retro-blue sm:block"
         aria-hidden="true"
       >
         <svg

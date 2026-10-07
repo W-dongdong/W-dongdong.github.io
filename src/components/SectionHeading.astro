@@ -8,8 +8,10 @@ interface Props {
 const { index, title, class: className } = Astro.props;
 ---
 
-<div class:list={['flex items-baseline gap-3', className]}>
-  <span class="eyebrow">{index}</span>
-  <h2 class="font-display text-xl text-ink">{title}</h2>
+<div class:list={[className]} data-reveal>
+  <div class="flex items-baseline gap-3">
+    <span class="eyebrow">{index}</span>
+    <h2 class="font-display text-xl font-bold text-ink">{title}</h2>
+  </div>
+  <div class="rule mt-3" aria-hidden="true"></div>
 </div>
-<div class="rule mt-3" aria-hidden="true"></div>

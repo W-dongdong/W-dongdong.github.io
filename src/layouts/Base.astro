@@ -5,8 +5,11 @@ interface Props {
 }
 const { title, description } = Astro.props;
 
-import '@fontsource/archivo-black';
-import '@fontsource/vt323';
+import '@fontsource/space-grotesk/latin-400.css';
+import '@fontsource/space-grotesk/latin-500.css';
+import '@fontsource/space-grotesk/latin-700.css';
+import '@fontsource/space-mono/latin-400.css';
+import '@fontsource/space-mono/latin-700.css';
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 import { ClientRouter } from 'astro:transitions';
@@ -39,6 +42,17 @@ const siteName = 'WU Yandong';
           ? mode
           : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', resolved);
+
+        // Arm scroll-reveal before first paint so nothing flashes in visible and
+        // then jumps. Only armed when we can actually reveal things again.
+        try {
+          if (
+            'IntersectionObserver' in window &&
+            !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ) {
+            document.documentElement.classList.add('reveal-ready');
+          }
+        } catch (e) {}
       })();
     </script>
   </head>
@@ -49,5 +63,70 @@ const siteName = 'WU Yandong';
     </main>
     <Footer />
     <MusicPlayer />
+
+    <script>
+      // --- Scroll reveal -------------------------------------------------
+      // ClientRouter swaps the page body on navigation, so re-arm the class on
+      // <html> and re-observe whatever `[data-reveal]` elements now exist.
+      var observer: IntersectionObserver | null = null;
+
+      function observeReveals() {
+        if (!observer) return;
+        document.querySelectorAll('[data-reveal]:not(.is-visible)').forEach(function (el) {
+          observer!.observe(el);
+        });
+      }
+
+      if ('IntersectionObserver' in window) {
+        observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('is-visible');
+              observer!.unobserve(entry.target);
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+        );
+      }
+
+      document.addEventListener('astro:after-swap', function () {
+        if (
+          'IntersectionObserver' in window &&
+          !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
+          document.documentElement.classList.add('reveal-ready');
+        }
+        observeReveals();
+      });
+
+      observeReveals();
+
+      // --- Reading progress ----------------------------------------------
+      // One persistent listener updates whichever #reading-progress element
+      // the header currently holds.
+      var ticking = false;
+
+      function paintProgress() {
+        ticking = false;
+        var bar = document.querySelector('#reading-progress > span') as HTMLElement | null;
+        if (!bar) return;
+        var doc = document.documentElement;
+        var scrollable = doc.scrollHeight - window.innerHeight;
+        var ratio = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+        bar.style.transform = 'scaleX(' + ratio + ')';
+      }
+
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(paintProgress);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      document.addEventListener('astro:after-swap', paintProgress);
+      paintProgress();
+    </script>
   </body>
 </html>

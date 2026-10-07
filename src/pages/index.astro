@@ -18,19 +18,21 @@ const projects = (await getCollection('projects'))
   <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start lg:gap-14">
       <!-- Profile rail -->
-      <aside class="lg:sticky lg:top-24">
+      <aside class="lg:sticky lg:top-24" data-reveal>
         <Hero />
       </aside>
 
       <!-- Featured projects + contact -->
-      <div class="flex flex-col gap-14">
+      <div class="flex flex-col gap-16">
         <section>
           <SectionHeading index="01" title="Featured Projects" />
 
           {projects.length > 0 ? (
             <div class="mt-6 flex flex-col gap-4">
-              {projects.map((p) => (
-                <ProjectCard project={p} layout="row" />
+              {projects.map((p, i) => (
+                <div data-reveal style={`transition-delay:${i * 80}ms`}>
+                  <ProjectCard project={p} layout="row" />
+                </div>
               ))}
             </div>
           ) : (
@@ -39,18 +41,23 @@ const projects = (await getCollection('projects'))
 
           <a
             href="/projects"
-            class="crt-text mt-5 inline-block text-base text-retro-blue hover:underline"
+            class="crt-text mt-5 inline-block text-sm text-retro-blue hover:underline"
+            data-reveal
           >
             All projects →
           </a>
         </section>
 
         <section>
-          <SectionHeading index="02" title="Get in Touch" />
+          <SectionHeading index="02" title="Say hello" />
 
-          <div class="card mt-6 flex flex-col items-start gap-5 p-8 sm:flex-row sm:items-center sm:justify-between">
+          <div
+            class="card mt-6 flex flex-col items-start gap-5 p-8 sm:flex-row sm:items-center sm:justify-between"
+            data-reveal
+          >
             <p class="text-ink-muted">
-              I'm open to collaboration and new ideas — feel free to reach out.
+              Whether it's a collaboration, a question about something I've built, or just a hello —
+              my inbox is open.
             </p>
             <div class="flex flex-none flex-wrap gap-3">
               <a href="mailto:dongdong7559@gmail.com" class="btn btn--primary">Send Email</a>

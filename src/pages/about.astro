@@ -23,9 +23,9 @@ const interests = [
   description="WU Yandong, an Electrical Engineering undergraduate at The Hong Kong Polytechnic University, focused on robotics, embedded systems, and control systems."
 >
   <section class="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-    <header>
+    <header data-reveal>
       <p class="eyebrow">Profile</p>
-      <h1 class="mt-3 font-display text-2xl text-ink sm:text-3xl">About Me</h1>
+      <h1 class="mt-3 font-display text-2xl font-bold text-ink sm:text-3xl">About Me</h1>
       <div class="rule mt-4" aria-hidden="true"></div>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-muted">
         I'm WU Yandong, an Electrical Engineering undergraduate at The Hong Kong Polytechnic University.
@@ -36,12 +36,12 @@ const interests = [
 
     <SectionHeading index="01" title="Education" class="mt-14" />
     <ol class="mt-6 space-y-6 border-l border-line pl-6">
-      <li class="relative">
+      <li class="relative" data-reveal>
         <span class="absolute -left-[27px] top-2 h-2.5 w-2.5 rounded-full border border-line-strong bg-cream"></span>
         <div class="card p-5">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h3 class="text-base font-semibold text-ink">The Hong Kong Polytechnic University · BEng in Electrical Engineering</h3>
-            <time class="crt-text text-base text-ink-muted">2024 – 2028</time>
+            <time class="crt-text text-sm text-ink-muted">2024 – 2028</time>
           </div>
           <ul class="mt-2 space-y-1 text-sm text-ink-muted">
             <li>GPA 3.54 / 4.3 · Year 3 Undergraduate</li>
@@ -53,25 +53,25 @@ const interests = [
 
     <SectionHeading index="02" title="Credentials" class="mt-14" />
     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div class="card p-5">
+      <div class="card p-5" data-reveal>
         <h3 class="text-base font-semibold text-ink">Minor</h3>
         <p class="mt-1 text-sm text-ink-muted">Electronic System &amp; IoT</p>
       </div>
-      <div class="card p-5">
+      <div class="card p-5" data-reveal style="transition-delay:80ms">
         <h3 class="text-base font-semibold text-ink">Membership</h3>
         <p class="mt-1 text-sm text-ink-muted">Student Member of the HKIE (Hong Kong Institution of Engineers)</p>
       </div>
     </div>
 
     <SectionHeading index="03" title="Skills" class="mt-14" />
-    <ul class="mt-6 flex flex-wrap gap-1.5">
+    <ul class="mt-6 flex flex-wrap gap-1.5" data-reveal>
       {skills.map((skill) => (
         <li class="tag">{skill}</li>
       ))}
     </ul>
 
     <SectionHeading index="04" title="Research & Interest Directions" class="mt-14" />
-    <ul class="mt-6 flex flex-wrap gap-1.5">
+    <ul class="mt-6 flex flex-wrap gap-1.5" data-reveal>
       {interests.map((interest) => (
         <li class="tag">{interest}</li>
       ))}

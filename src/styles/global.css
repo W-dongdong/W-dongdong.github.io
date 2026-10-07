@@ -6,10 +6,10 @@
 /*  Fonts (self-hosted, emitted as CSS variables)                      */
 /* ------------------------------------------------------------------ */
 @theme {
-  --font-display: "Archivo Black", "Arial Black", system-ui, sans-serif;
-  --font-crt: "VT323", ui-monospace, "Courier New", monospace;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-crt: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
 /* ------------------------------------------------------------------ */
@@ -117,10 +117,10 @@ body {
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   font-family: var(--font-crt);
-  font-size: 0.95rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -149,7 +149,7 @@ body {
 /* 4. Phosphor/terminal text — used for metadata only, never body copy */
 .crt-text {
   font-family: var(--font-crt);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 /* 5. Hard-edged pill button */
@@ -192,8 +192,8 @@ body {
   display: inline-flex;
   align-items: center;
   font-family: var(--font-crt);
-  font-size: 0.95rem;
-  line-height: 1.2;
+  font-size: 0.72rem;
+  line-height: 1.35;
   padding: 0.05rem 0.45rem;
   border: 1px solid var(--line);
   border-radius: var(--r-tag);
@@ -211,6 +211,103 @@ body {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Motion — every piece degrades to "no motion", never to "no content" */
+/* ------------------------------------------------------------------ */
+
+/* Scroll reveal. `reveal-ready` is set on <html> by an inline script in the
+   head, only when IntersectionObserver is available and the visitor has not
+   asked for reduced motion — so with JS off or motion reduced, nothing is
+   ever hidden. */
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Live status dot */
+.pulse-dot {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--green);
+}
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: pulse-ring 2.6s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  70%, 100% { transform: scale(2.8); opacity: 0; }
+}
+
+/* Terminal caret */
+.caret {
+  display: inline-block;
+  width: 0.5ch;
+  height: 1em;
+  margin-left: 0.15em;
+  background: var(--accent);
+  vertical-align: -0.14em;
+  animation: caret-blink 1.15s steps(1, end) infinite;
+}
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Rotating greeting line */
+.greeting-line {
+  display: inline-block;
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+.greeting-line.is-out {
+  opacity: 0;
+  transform: translateY(-0.4em);
+}
+
+/* Reading-progress hairline under the sticky header */
+.progress {
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 2px;
+  overflow: hidden;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .pulse-dot::after,
+  .caret { animation: none; }
+  .caret { opacity: 1; }
+  .greeting-line { transition: none; }
+  .progress > span { transition: none; }
+}
+
+/* ------------------------------------------------------------------ */
 /*  Article / markdown prose (project detail pages)                    */
 /* ------------------------------------------------------------------ */
 .blog-prose {
@@ -222,6 +319,7 @@ body {
 .blog-prose h2,
 .blog-prose h3,
 .blog-prose h4 {
+  font-family: var(--font-display);
   font-weight: 700;
   color: var(--fg);
   line-height: 1.25;
