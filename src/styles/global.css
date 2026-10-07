@@ -15,18 +15,21 @@
 /* ------------------------------------------------------------------ */
 /*  Semantic palette (VHS paper / CRT dark room)                       */
 /*                                                                     */
-/*  Same paper-and-phosphor family as before, pulled back: one accent   */
-/*  colour instead of four, hairline rules instead of rainbow bars.     */
+/*  Two printing inks and nothing else: the blue carries links, labels  */
+/*  and rules; the rust carries the rules' accent and half the card     */
+/*  blocks, so the page alternates instead of sitting on one hue.       */
 /* ------------------------------------------------------------------ */
 :root {
   --bg: #f4efe4;
   --surface: #fcfaf5;
+  --surface-2: #f9f1e0; /* warm sand — the profile rail */
   --fg: #1c1a17;
   --muted: #6a6357;
   --line: #ddd5c5;
   --line-soft: #eae4d7;
   --line-strong: #c7bda8;
   --accent: #2f4f9e;
+  --accent-2: #b4552c;
   --red: #b4453a;
   --amber: #a97a15;
   --green: #2e7d5b;
@@ -40,12 +43,14 @@
 [data-theme="dark"] {
   --bg: #0c0c11;
   --surface: #15151d;
+  --surface-2: #1a1713; /* warm ink — the profile rail */
   --fg: #e7e3d9;
   --muted: #968fa3;
   --line: #2b2b38;
   --line-soft: #21212c;
   --line-strong: #3b3b4c;
   --accent: #8aa4ff;
+  --accent-2: #e0906a;
   --red: #d9635a;
   --amber: #d9a44a;
   --green: #4fb98a;
@@ -110,7 +115,18 @@ body {
   position: absolute;
   inset: 0 auto 0 0;
   width: 2.5rem;
+  background: var(--accent-2);
+}
+
+/* Solid colour block across the top of a project card. The two inks
+   alternate down the list so a grid of cards reads as a rhythm. */
+.accent-bar {
+  display: block;
+  width: 100%;
   background: var(--accent);
+}
+.accent-bar--alt {
+  background: var(--accent-2);
 }
 
 /* 2. Eyebrow label — section number in terminal type above a heading */
@@ -144,6 +160,12 @@ body {
   transform: translate(-1px, -1px);
   box-shadow: 5px 5px 0 var(--line);
   border-color: var(--line-strong);
+}
+
+/* Warmer paper for the profile rail, so the page opens on a colour rather
+   than on the same panel as everything else. */
+.card--warm {
+  background-color: var(--surface-2);
 }
 
 /* 4. Phosphor/terminal text — used for metadata only, never body copy */
@@ -197,6 +219,7 @@ body {
   padding: 0.05rem 0.45rem;
   border: 1px solid var(--line);
   border-radius: var(--r-tag);
+  background-color: var(--line-soft);
   color: var(--muted);
 }
 .tag::before { content: "["; margin-right: 0.28rem; opacity: 0.55; }
@@ -263,7 +286,7 @@ body {
 .progress > span {
   display: block;
   height: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
   transform: scaleX(0);
   transform-origin: 0 50%;
   transition: transform 0.1s linear;

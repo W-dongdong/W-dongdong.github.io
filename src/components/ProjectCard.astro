@@ -1,5 +1,6 @@
 ---
 import TagBadge from './TagBadge.astro';
+import { statusTone } from '../lib/status';
 
 interface Props {
   project: {
@@ -14,23 +15,32 @@ interface Props {
   };
   /** 'grid' — compact tile for a multi-column grid. 'row' — wide list entry. */
   layout?: 'grid' | 'row';
+  /** Position in its list — alternates the colour block on top of the card. */
+  index?: number;
 }
 
-const { project, layout = 'grid' } = Astro.props;
+const { project, layout = 'grid', index = 0 } = Astro.props;
 const dateStr = project.data.date.toISOString().slice(0, 10);
+const barClass = index % 2 === 0 ? 'accent-bar' : 'accent-bar accent-bar--alt';
+const dotClass = project.data.status ? statusTone[project.data.status] : undefined;
 ---
 
 <a
   href={`/projects/${project.id}`}
   class="card group flex h-full flex-col overflow-hidden"
 >
-  <div class="h-0.5 w-full flex-none bg-retro-blue" aria-hidden="true"></div>
+  <div class:list={[barClass, 'h-[3px] flex-none']} aria-hidden="true"></div>
 
   {layout === 'grid' ? (
     <div class="flex flex-1 flex-col p-5">
       <div class="crt-text flex items-center justify-between gap-2 text-xs leading-none text-ink-muted">
         <time datetime={dateStr}>{dateStr}</time>
-        {project.data.status && <span>{project.data.status}</span>}
+        {project.data.status && (
+          <span class="flex items-center gap-1.5">
+            <span class:list={['h-1.5 w-1.5 flex-none rounded-full', dotClass]} aria-hidden="true"></span>
+            {project.data.status}
+          </span>
+        )}
       </div>
 
       <h3 class="mt-2.5 font-display text-base font-bold leading-snug text-ink transition-colors group-hover:text-retro-blue">
@@ -53,7 +63,12 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
     <div class="flex flex-1 flex-col gap-3 p-5 sm:flex-row sm:gap-6">
       <div class="crt-text flex flex-none items-baseline gap-3 text-xs leading-none text-ink-muted sm:w-28 sm:flex-col sm:items-start sm:gap-1.5">
         <time datetime={dateStr}>{dateStr}</time>
-        {project.data.status && <span>{project.data.status}</span>}
+        {project.data.status && (
+          <span class="flex items-center gap-1.5">
+            <span class:list={['h-1.5 w-1.5 flex-none rounded-full', dotClass]} aria-hidden="true"></span>
+            {project.data.status}
+          </span>
+        )}
       </div>
 
       <div class="flex-1">

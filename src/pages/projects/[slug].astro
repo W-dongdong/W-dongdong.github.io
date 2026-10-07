@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import { statusTone } from '../../lib/status';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -11,6 +12,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const dateStr = project.data.date.toISOString().slice(0, 10);
+const dotClass = project.data.status ? statusTone[project.data.status] : undefined;
 ---
 
 <Base
@@ -33,7 +35,12 @@ const dateStr = project.data.date.toISOString().slice(0, 10);
 
       <div class="crt-text mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-muted">
         <time datetime={dateStr}>{dateStr}</time>
-        {project.data.status && <span>{project.data.status}</span>}
+        {project.data.status && (
+          <span class="flex items-center gap-1.5">
+            <span class:list={['h-1.5 w-1.5 flex-none rounded-full', dotClass]} aria-hidden="true"></span>
+            {project.data.status}
+          </span>
+        )}
       </div>
 
       {project.data.tags.length > 0 && (
