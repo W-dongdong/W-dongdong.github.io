@@ -70,6 +70,13 @@ const siteName = 'WU Yandong';
       // --- Scroll reveal -------------------------------------------------
       // ClientRouter swaps the page body on navigation, so re-arm the class on
       // <html> and re-observe whatever `[data-reveal]` elements now exist.
+      var canReveal = function () {
+        return (
+          'IntersectionObserver' in window &&
+          !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        );
+      };
+
       var observer: IntersectionObserver | null = null;
 
       function observeReveals() {
@@ -92,12 +99,39 @@ const siteName = 'WU Yandong';
         );
       }
 
+      // `before-swap` hands us the incoming document *before* it is applied.
+      // ClientRouter copies the server-rendered <html> attributes onto the live
+      // element, and those do not carry the class added here at runtime — so
+      // arming it in `after-swap` lands a frame too late and the browser paints a
+      // flash of fully-visible content. Arm the incoming document instead.
+      document.addEventListener('astro:before-swap', function (event: any) {
+        var incoming: Document | undefined = event.newDocument;
+        if (incoming && canReveal()) incoming.documentElement.classList.add('reveal-ready');
+      });
+
       document.addEventListener('astro:after-swap', function () {
-        if (
-          'IntersectionObserver' in window &&
-          !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        ) {
-          document.documentElement.classList.add('reveal-ready');
+        if (canReveal()) {
+          // Whatever lands in the first screenful of the incoming page should
+          // simply be there. Only content further down animates in as it is
+          // scrolled to — otherwise every click reads as the page fading in
+          // twice, once in the view-transition cross-fade and again in the
+          // reveal.
+          //
+          // This has to happen here, synchronously: the browser snapshots the
+          // new state once the swap callback returns, so marking them in the
+          // observer's first batch would put an empty page in that snapshot.
+          // Measuring against the document rather than the viewport keeps it
+          // independent of when the scroll position gets reset.
+          var fold = window.innerHeight;
+          document.querySelectorAll('[data-reveal]:not(.is-visible)').forEach(function (el) {
+            var node = el as HTMLElement;
+            if (node.getBoundingClientRect().top + window.scrollY >= fold) return;
+            node.style.transition = 'none';
+            node.classList.add('is-visible');
+            requestAnimationFrame(function () {
+              node.style.transition = '';
+            });
+          });
         }
         observeReveals();
       });

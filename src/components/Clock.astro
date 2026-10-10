@@ -17,12 +17,23 @@
     return String(n).padStart(2, '0');
   };
 
+  function clockText() {
+    var d = new Date();
+    return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+
   function renderClock() {
     var out = document.querySelector('#site-clock [data-time]');
-    if (!out) return;
-    var d = new Date();
-    out.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+    if (out) out.textContent = clockText();
   }
+
+  // The incoming document carries the server-rendered placeholder. Fill it in
+  // before the swap so the header never shows a frame of `--:--:--`.
+  document.addEventListener('astro:before-swap', function (event: any) {
+    var incoming: Document | undefined = event.newDocument;
+    var out = incoming?.querySelector('#site-clock [data-time]');
+    if (out) out.textContent = clockText();
+  });
 
   // One persistent timer updates whichever clock element is currently in the
   // DOM, so it keeps ticking across ClientRouter page transitions.

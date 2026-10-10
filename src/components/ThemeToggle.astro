@@ -42,11 +42,14 @@
     btn.setAttribute('aria-label', 'Theme: ' + labels[getMode()]);
   }
 
-  function apply(mode) {
-    var resolved = mode === 'light' || mode === 'dark'
+  function resolve(mode) {
+    return mode === 'light' || mode === 'dark'
       ? mode
       : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', resolved);
+  }
+
+  function apply(mode) {
+    document.documentElement.setAttribute('data-theme', resolve(mode));
     if (mode === 'system') {
       try { localStorage.removeItem('theme'); } catch (e) {}
     } else {
@@ -55,11 +58,20 @@
     render(document.getElementById('theme-toggle'));
   }
 
-  // ClientRouter swaps the <html> attributes on navigation, which strips the
-  // client-applied `data-theme` (set on first load in Base.astro). Re-apply the
-  // current mode and refresh the label on `astro:after-swap`, which fires
-  // synchronously right after the DOM swap and before the view-transition
-  // snapshot, so the wrong theme never flashes.
+  // The incoming page is applied with its server-rendered <html> attributes,
+  // which carry no `data-theme`. Fixing that in `astro:after-swap` is too late:
+  // the document is already in the DOM by then, so the dark theme paints one
+  // light frame on every navigation. Set it on the incoming document instead.
+  document.addEventListener('astro:before-swap', function (event: any) {
+    var incoming: Document | undefined = event.newDocument;
+    if (!incoming) return;
+    var mode = getMode();
+    incoming.documentElement.setAttribute('data-theme', resolve(mode));
+    var label = incoming.querySelector('#theme-toggle [data-label]');
+    if (label) label.textContent = labels[mode];
+  });
+
+  // Safety net for anything the swap path above did not cover.
   document.addEventListener('astro:after-swap', function () {
     apply(getMode());
   });
