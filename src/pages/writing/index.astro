@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import WritingCard from '../../components/WritingCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Base
+  title="Writing — WU Yandong"
+  description="Knowledge always has a better way to be understood."
+>
+  <section class="mx-auto max-w-5xl px-4 py-14 sm:px-6">
+    <p class="eyebrow" data-reveal>Notes</p>
+    <h1 class="mt-3 font-display text-2xl font-bold text-ink sm:text-3xl" data-reveal>Writing</h1>
+    <div class="rule mt-4" aria-hidden="true"></div>
+    <p class="mt-6 max-w-2xl text-lg text-ink-muted" data-reveal>
+      Knowledge always has a better way to be understood.
+    </p>
+
+    {posts.length > 0 ? (
+      <div class="mt-10 flex flex-col gap-4">
+        {posts.map((post, i) => (
+          <div data-reveal style={`transition-delay:${i * 80}ms`}>
+            <WritingCard entry={post} />
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p class="mt-10 text-sm text-ink-muted">Nothing published yet.</p>
+    )}
+  </section>
+</Base>

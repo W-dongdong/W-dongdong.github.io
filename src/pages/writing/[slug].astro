@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import TagBadge from '../../components/TagBadge.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const dateStr = post.data.date.toISOString().slice(0, 10);
+
+const words = (post.body ?? '').trim().split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+---
+
+<Base
+  title={`${post.data.title} — Writing`}
+  description={post.data.description ?? post.data.title}
+>
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <header data-reveal>
+      <a href="/writing" class="crt-text text-sm text-retro-blue hover:underline">
+        ← All writing
+      </a>
+
+      <h1 class="mt-5 font-display text-2xl font-bold text-ink sm:text-3xl">
+        {post.data.title}
+      </h1>
+
+      {post.data.description && (
+        <p class="mt-3 text-lg text-ink-muted">{post.data.description}</p>
+      )}
+
+      <div class="crt-text mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-muted">
+        <time datetime={dateStr}>{dateStr}</time>
+        <span>{minutes} min read</span>
+      </div>
+
+      {post.data.tags.length > 0 && (
+        <div class="mt-4 flex flex-wrap gap-1.5">
+          {post.data.tags.map((tag) => (
+            <TagBadge tag={tag} />
+          ))}
+        </div>
+      )}
+
+      <div class="rule mt-8" aria-hidden="true"></div>
+    </header>
+
+    <div class="blog-prose mt-8">
+      <Content />
+    </div>
+  </article>
+</Base>

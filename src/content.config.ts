@@ -15,4 +15,17 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+// Short explainer pieces. `draft: true` keeps a file out of the list, the feed
+// and the build's routes while it is still being written.
+const writing = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/writing' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    date: z.coerce.date(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { projects, writing };

@@ -6,6 +6,7 @@ const nav = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/projects', label: 'Projects' },
+  { href: '/writing', label: 'Writing' },
   { href: '/resume', label: 'Resume' },
 ];
 
@@ -29,9 +30,9 @@ function isActive(href: string) {
     <div class="flex items-center gap-2 sm:gap-4">
       <Clock />
 
-      <span class="hidden h-5 w-px bg-line md:block" aria-hidden="true"></span>
+      <span class="hidden h-5 w-px bg-line lg:block" aria-hidden="true"></span>
 
-      <ul class="hidden items-center gap-0.5 rounded-full border border-line p-0.5 md:flex">
+      <ul class="hidden items-center gap-0.5 rounded-full border border-line p-0.5 lg:flex">
         {nav.map((item) => (
           <li>
             <a
@@ -55,7 +56,7 @@ function isActive(href: string) {
       <button
         type="button"
         id="menu-toggle"
-        class="inline-flex items-center justify-center rounded-full border border-line p-2 text-ink transition-colors hover:border-line-strong md:hidden"
+        class="inline-flex items-center justify-center rounded-full border border-line p-2 text-ink transition-colors hover:border-line-strong lg:hidden"
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -79,7 +80,7 @@ function isActive(href: string) {
     </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden border-t border-line md:hidden">
+  <div id="mobile-menu" class="hidden border-t border-line lg:hidden">
     <ul class="flex flex-col gap-0.5 px-4 py-3">
       {nav.map((item) => (
         <li>

@@ -1,0 +1,66 @@
+---
+import TagBadge from './TagBadge.astro';
+
+interface Props {
+  entry: {
+    id: string;
+    body?: string;
+    data: {
+      title: string;
+      description?: string;
+      date: Date;
+      tags: string[];
+    };
+  };
+}
+
+const { entry } = Astro.props;
+const dateStr = entry.data.date.toISOString().slice(0, 10);
+
+const words = (entry.body ?? '').trim().split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+---
+
+<a
+  href={`/writing/${entry.id}`}
+  class="card group flex flex-col gap-3 p-5 sm:flex-row sm:gap-6"
+>
+  <div class="crt-text flex flex-none items-baseline gap-3 text-xs leading-none text-ink-muted sm:w-28 sm:flex-col sm:items-start sm:gap-1.5">
+    <time datetime={dateStr}>{dateStr}</time>
+    <span>{minutes} min</span>
+  </div>
+
+  <div class="flex-1">
+    <h3 class="font-display text-lg font-bold leading-snug text-ink transition-colors group-hover:text-retro-blue">
+      {entry.data.title}
+    </h3>
+
+    {entry.data.description && (
+      <p class="mt-1.5 text-sm leading-relaxed text-ink-muted">{entry.data.description}</p>
+    )}
+
+    {entry.data.tags.length > 0 && (
+      <div class="mt-3 flex flex-wrap gap-1.5">
+        {entry.data.tags.map((tag) => (
+          <TagBadge tag={tag} />
+        ))}
+      </div>
+    )}
+  </div>
+
+  <span
+    class="hidden flex-none text-ink-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-retro-blue sm:block"
+    aria-hidden="true"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="h-5 w-5"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+    </svg>
+  </span>
+</a>
