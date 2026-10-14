@@ -29,6 +29,11 @@
   var modes = ['light', 'dark', 'system'];
   var labels = { light: 'Light', dark: 'Dark', system: 'System' };
 
+  // Cross-fade length. The class is only on <html> while a switch is running,
+  // so the site's own transitions come straight back afterwards.
+  var FADE_MS = 500;
+  var fadeTimer = 0;
+
   function getMode() {
     var s = null;
     try { s = localStorage.getItem('theme'); } catch (e) {}
@@ -48,8 +53,38 @@
       : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }
 
-  function apply(mode) {
-    document.documentElement.setAttribute('data-theme', resolve(mode));
+  function reduceMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function setTheme(next, fade) {
+    var root = document.documentElement;
+    var changed = root.getAttribute('data-theme') !== next;
+
+    // Arm the fade before the attribute flips, or the new colours land first
+    // and there is nothing left to transition from.
+    if (fade && changed && !reduceMotion()) {
+      // `color-scheme` has to hold still for the length of the fade. Chrome
+      // animates the whole palette itself when it changes, and that lands on
+      // top of this transition — every colour then took about a second
+      // instead of half of one. Pinning it as an inline style keeps the old
+      // scheme in force, and clearing it afterwards hands the property back
+      // to the stylesheet, which by then matches the new theme anyway.
+      root.style.colorScheme = root.getAttribute('data-theme') || 'light';
+      root.classList.add('theme-fade');
+
+      window.clearTimeout(fadeTimer);
+      fadeTimer = window.setTimeout(function () {
+        root.classList.remove('theme-fade');
+        root.style.colorScheme = '';
+      }, FADE_MS + 60);
+    }
+
+    root.setAttribute('data-theme', next);
+  }
+
+  function apply(mode, fade) {
+    setTheme(resolve(mode), fade);
     if (mode === 'system') {
       try { localStorage.removeItem('theme'); } catch (e) {}
     } else {
@@ -71,9 +106,10 @@
     if (label) label.textContent = labels[mode];
   });
 
-  // Safety net for anything the swap path above did not cover.
+  // Safety net for anything the swap path above did not cover. No fade here:
+  // a navigation must not animate the palette.
   document.addEventListener('astro:after-swap', function () {
-    apply(getMode());
+    apply(getMode(), false);
   });
 
   // Delegated click, so the button keeps working on the re-rendered header.
@@ -84,7 +120,7 @@
     if (!btn) return;
     var cur = getMode();
     var next = modes[(modes.indexOf(cur) + 1) % modes.length];
-    apply(next);
+    apply(next, true);
   });
 
   // Initial render.
@@ -94,7 +130,7 @@
   var mq = window.matchMedia('(prefers-color-scheme: dark)');
   var onChange = function () {
     if (getMode() === 'system') {
-      document.documentElement.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
+      setTheme(mq.matches ? 'dark' : 'light', true);
     }
   };
   if (mq.addEventListener) mq.addEventListener('change', onChange);

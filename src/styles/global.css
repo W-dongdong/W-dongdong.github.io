@@ -656,3 +656,26 @@ body {
   margin-left: auto;
 }
 
+
+/* ------------------------------------------------------------------ */
+/*  Theme cross-fade                                                   */
+/*                                                                     */
+/*  ThemeToggle puts `.theme-fade` on <html> for the length of a        */
+/*  switch and takes it off again, so this blanket override exists only */
+/*  while the palette is changing — hover transitions elsewhere on the  */
+/*  site are untouched the rest of the time. `!important` is what makes */
+/*  it win over the per-element transitions while it lasts.            */
+/* ------------------------------------------------------------------ */
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    color 0.5s ease,
+    fill 0.5s ease,
+    stroke 0.5s ease,
+    box-shadow 0.5s ease,
+    outline-color 0.5s ease !important;
+}
