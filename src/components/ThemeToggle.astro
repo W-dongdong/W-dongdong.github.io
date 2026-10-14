@@ -29,10 +29,7 @@
   var modes = ['light', 'dark', 'system'];
   var labels = { light: 'Light', dark: 'Dark', system: 'System' };
 
-  // Cross-fade length. The class is only on <html> while a switch is running,
-  // so the site's own transitions come straight back afterwards.
-  var FADE_MS = 500;
-  var fadeTimer = 0;
+  // The length of the switch lives in global.css, on ::view-transition-old/new.
 
   function getMode() {
     var s = null;
@@ -61,23 +58,17 @@
     var root = document.documentElement;
     var changed = root.getAttribute('data-theme') !== next;
 
-    // Arm the fade before the attribute flips, or the new colours land first
-    // and there is nothing left to transition from.
-    if (fade && changed && !reduceMotion()) {
-      // `color-scheme` has to hold still for the length of the fade. Chrome
-      // animates the whole palette itself when it changes, and that lands on
-      // top of this transition — every colour then took about a second
-      // instead of half of one. Pinning it as an inline style keeps the old
-      // scheme in force, and clearing it afterwards hands the property back
-      // to the stylesheet, which by then matches the new theme anyway.
-      root.style.colorScheme = root.getAttribute('data-theme') || 'light';
-      root.classList.add('theme-fade');
-
-      window.clearTimeout(fadeTimer);
-      fadeTimer = window.setTimeout(function () {
-        root.classList.remove('theme-fade');
-        root.style.colorScheme = '';
-      }, FADE_MS + 60);
+    // A switch runs as a view transition: the browser snapshots the page,
+    // the palette flips, and it cross-fades the two. Doing it per element
+    // cannot work — `color-scheme` has to move with the theme, and Chrome
+    // runs its own palette animation when it changes, which landed on top of
+    // the element transitions and doubled every one of them. Browsers without
+    // the API (and reduced-motion) just switch outright.
+    if (fade && changed && !reduceMotion() && typeof document.startViewTransition === 'function') {
+      document.startViewTransition(function () {
+        root.setAttribute('data-theme', next);
+      });
+      return;
     }
 
     root.setAttribute('data-theme', next);

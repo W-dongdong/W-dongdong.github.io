@@ -660,22 +660,16 @@ body {
 /* ------------------------------------------------------------------ */
 /*  Theme cross-fade                                                   */
 /*                                                                     */
-/*  ThemeToggle puts `.theme-fade` on <html> for the length of a        */
-/*  switch and takes it off again, so this blanket override exists only */
-/*  while the palette is changing — hover transitions elsewhere on the  */
-/*  site are untouched the rest of the time. `!important` is what makes */
-/*  it win over the per-element transitions while it lasts.            */
+/*  ThemeToggle runs the switch through the View Transitions API, so    */
+/*  the browser snapshots the page, flips the palette, and cross-fades  */
+/*  the two. Everything changes at one rate — including native          */
+/*  scrollbars and the code blocks, whose colours are fixed and which a */
+/*  per-element transition would leave behind. Browsers without the API */
+/*  switch outright, and Astro already cancels these animations under   */
+/*  prefers-reduced-motion.                                             */
 /* ------------------------------------------------------------------ */
-html.theme-fade,
-html.theme-fade *,
-html.theme-fade *::before,
-html.theme-fade *::after {
-  transition:
-    background-color 0.5s ease,
-    border-color 0.5s ease,
-    color 0.5s ease,
-    fill 0.5s ease,
-    stroke 0.5s ease,
-    box-shadow 0.5s ease,
-    outline-color 0.5s ease !important;
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
 }
