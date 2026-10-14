@@ -1,11 +1,12 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
+import { isChapterEntryId } from '../lib/series';
 
 export async function GET(context: APIContext) {
-  const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-  );
+  const posts = (await getCollection('writing', ({ data }) => !data.draft))
+    .filter((post) => !isChapterEntryId(post.id))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
   return rss({
     title: 'WU Yandong — Writing',

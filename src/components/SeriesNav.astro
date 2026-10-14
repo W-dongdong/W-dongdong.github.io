@@ -1,0 +1,210 @@
+---
+import { isSeriesHome, type Series, type SeriesGroup, type SeriesNode } from '../lib/series';
+
+interface Props {
+  series: Series;
+  /** The page being rendered, so the rail can mark itself up. */
+  pathname: string;
+  /**
+   * Prefix for the group panel ids. The rail is rendered twice (mobile
+   * disclosure + desktop column), so ids have to stay unique per instance.
+   */
+  idPrefix?: string;
+}
+
+const { series, pathname, idPrefix = 'series' } = Astro.props;
+
+const bare = (path: string) => path.replace(/[?#].*$/, '').replace(/\/+$/, '') || '/';
+const current = bare(pathname);
+const onHome = isSeriesHome(series, pathname);
+const isGroup = (node: SeriesNode): node is SeriesGroup => 'pages' in node;
+
+// A group opens when the reader is somewhere inside it — including on the
+// group's own page. Everything else starts folded; the script then restores
+// whatever the reader had open last time.
+const rows = series.nodes.map((node, i) => {
+  if (!isGroup(node)) return { kind: 'link' as const, node, active: bare(node.href) === current };
+
+  return {
+    kind: 'group' as const,
+    node,
+    key: `${series.href}::${node.title}`,
+    id: `${idPrefix}-group-${i}`,
+    active: node.href ? bare(node.href) === current : false,
+    expanded:
+      onHome ||
+      node.pages.some((page) => bare(page.href) === current) ||
+      (node.href ? bare(node.href) === current : false),
+  };
+});
+---
+
+<nav class="series-nav" data-series-nav aria-label={`${series.title} 系列目录`}>
+  <p class="series-nav__brand">
+    <span class="crt-text text-[0.6875rem] tracking-[0.14em] text-ink-muted uppercase">Series</span>
+    <span class="font-display text-base font-bold text-ink">{series.title}</span>
+  </p>
+  <p class="mt-1.5 text-xs leading-relaxed text-ink-muted">{series.blurb}</p>
+
+  <ul class="mt-5 space-y-0.5">
+    {
+      rows.map((row) =>
+        row.kind === 'link' ? (
+          <li class="series-nav__row">
+            <span class="series-nav__gutter" aria-hidden="true" />
+            <a
+              href={row.node.href}
+              aria-current={row.active ? 'page' : undefined}
+              class:list={['series-nav__chapter', row.active && 'is-active']}
+            >
+              {row.node.title}
+            </a>
+          </li>
+        ) : (
+          <li data-series-group={row.key}>
+            <div class="series-nav__row">
+              <button
+                type="button"
+                class="series-nav__toggle"
+                aria-expanded={String(row.expanded)}
+                aria-controls={row.id}
+              >
+                <span class="series-nav__caret" aria-hidden="true" />
+                <span class="sr-only">{row.expanded ? '收起' : '展开'}</span>
+              </button>
+
+              {row.node.href ? (
+                <a
+                  href={row.node.href}
+                  aria-current={row.active ? 'page' : undefined}
+                  class:list={['series-nav__chapter', row.active && 'is-active']}
+                >
+                  {row.node.title}
+                </a>
+              ) : (
+                <span class="series-nav__chapter series-nav__chapter--static">{row.node.title}</span>
+              )}
+            </div>
+
+            <ul id={row.id} class="series-nav__items" hidden={!row.expanded}>
+              {row.node.pages.map((page) => {
+                const active = bare(page.href) === current;
+                return (
+                  <li>
+                    <a
+                      href={page.href}
+                      aria-current={active ? 'page' : undefined}
+                      class:list={['series-nav__item', active && 'is-active']}
+                    >
+                      {page.title}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </li>
+        ),
+      )
+    }
+  </ul>
+</nav>
+
+<script>
+  // Which groups are unfolded is remembered per group, so navigating to
+  // another page never folds something the reader had opened.
+  const OPEN_KEY = 'series-open';
+
+  /** `{ "<group key>": true }` — a key that is absent has never been seen. */
+  function readStored(): Record<string, boolean> | null {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(OPEN_KEY) ?? 'null');
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+        ? (parsed as Record<string, boolean>)
+        : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeStored(state: Record<string, boolean>) {
+    try {
+      localStorage.setItem(OPEN_KEY, JSON.stringify(state));
+    } catch {
+      /* private mode - the rail falls back to its default each time */
+    }
+  }
+
+  function setGroup(group: Element, expanded: boolean) {
+    const toggle = group.querySelector('.series-nav__toggle');
+    if (toggle) toggle.setAttribute('aria-expanded', String(expanded));
+    group.querySelectorAll('ul[id]').forEach((panel) => {
+      (panel as HTMLElement).hidden = !expanded;
+    });
+  }
+
+  function groupsIn(root: ParentNode): Element[] {
+    return Array.from(root.querySelectorAll('[data-series-group]'));
+  }
+
+  const keyOf = (group: Element) => group.getAttribute('data-series-group') ?? '';
+
+  function isExpanded(group: Element) {
+    return group.querySelector('.series-nav__toggle')?.getAttribute('aria-expanded') === 'true';
+  }
+
+  function snapshot(root: ParentNode): Record<string, boolean> {
+    return Object.fromEntries(groupsIn(root).map((group) => [keyOf(group), isExpanded(group)]));
+  }
+
+  function applyState(root: ParentNode, remember: boolean) {
+    const stored = readStored();
+
+    groupsIn(root).forEach((group) => {
+      const key = keyOf(group);
+      // A group the reader has never met keeps whatever the server rendered.
+      const known = stored !== null && Object.hasOwn(stored, key);
+      setGroup(group, known ? stored[key] === true : isExpanded(group));
+    });
+
+    // Whatever else happens, the group holding the page being read stays open.
+    groupsIn(root).forEach((group) => {
+      if (group.querySelector('[aria-current="page"]')) setGroup(group, true);
+    });
+
+    // Only a page that actually has a rail should rewrite the memory —
+    // otherwise browsing the writing index would wipe it with an empty map.
+    if (remember && groupsIn(root).length > 0) writeStored(snapshot(root));
+  }
+
+  function initSeriesNav() {
+    applyState(document, true);
+
+    document.querySelectorAll<HTMLElement>('[data-series-nav]').forEach((nav) => {
+      nav.dataset.ready = 'true';
+
+      nav.querySelectorAll('.series-nav__toggle').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+          const group = toggle.closest('[data-series-group]');
+          if (!group) return;
+
+          const expanded = toggle.getAttribute('aria-expanded') !== 'true';
+          // Both rail copies (mobile and desktop) follow each other.
+          document
+            .querySelectorAll(`[data-series-group="${keyOf(group)}"]`)
+            .forEach((other) => setGroup(other, expanded));
+
+          writeStored(snapshot(document));
+        });
+      });
+    });
+  }
+
+  // Carry the state onto the incoming document before it is shown, so a
+  // client-side navigation never flashes the folded default.
+  document.addEventListener('astro:before-swap', (event) => {
+    const incoming = (event as unknown as { newDocument?: ParentNode }).newDocument;
+    if (incoming) applyState(incoming, false);
+  });
+
+  document.addEventListener('astro:page-load', initSeriesNav);
+</script>

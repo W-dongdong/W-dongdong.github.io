@@ -25,6 +25,9 @@
   --surface-2: #f9f1e0; /* warm sand — the profile rail */
   --fg: #1c1a17;
   --muted: #6a6357;
+  /* Body copy is set darker than --muted (which carries metadata) so a long
+     article reads without squinting. */
+  --prose: #3a352c;
   --line: #ddd5c5;
   --line-soft: #eae4d7;
   --line-strong: #c7bda8;
@@ -49,6 +52,8 @@
   --surface-2: #15151d;
   --fg: #e7e3d9;
   --muted: #968fa3;
+  /* And lighter than --muted on the dark page, for the same reason. */
+  --prose: #cdc6b8;
   --line: #2b2b38;
   --line-soft: #21212c;
   --line-strong: #3b3b4c;
@@ -292,7 +297,7 @@ body {
 .blog-prose {
   font-size: 1.0625rem;
   line-height: 1.8;
-  color: var(--muted);
+  color: var(--prose);
 }
 .blog-prose h1,
 .blog-prose h2,
@@ -387,3 +392,267 @@ body {
   overflow-y: hidden;
   padding: 0.25rem 0;
 }
+
+/* A code block plus its copy button. The wrapper is what the button is
+   positioned against; the <pre> keeps its own horizontal scrolling. */
+.blog-prose .code-block {
+  position: relative;
+  margin: 1.25rem 0;
+}
+.blog-prose .code-block pre {
+  margin: 0;
+}
+
+.code-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border: 1px solid rgba(226, 232, 240, 0.22);
+  border-radius: var(--r-tag);
+  background-color: rgba(18, 18, 26, 0.78);
+  color: #c3cbdc;
+  cursor: pointer;
+  opacity: 0.7;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.code-copy__icon {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+.code-copy__icon,
+.code-copy__icon svg {
+  display: block;
+}
+.code-copy__icon svg {
+  width: 100%;
+  height: 100%;
+}
+.code-copy:hover,
+.code-copy:focus-visible {
+  opacity: 1;
+  color: #e2e8f0;
+  border-color: rgba(226, 232, 240, 0.45);
+}
+/* The panel behind it is dark in both themes, so the confirmation colour is
+   the dark-theme accent rather than the themed one. */
+.code-copy.is-done {
+  opacity: 1;
+  color: #8aa4ff;
+  border-color: #8aa4ff;
+}
+.code-copy.is-failed {
+  opacity: 1;
+  color: #e08078;
+  border-color: #e08078;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Series rail — docs-style navigation for a multi-page write-up      */
+/* ------------------------------------------------------------------ */
+
+/* Reading column plus rail. The rail track is driven by --rail-w, which the
+   drag handle writes onto <html>; the fallback is the width it opens at. */
+@media (min-width: 1024px) {
+  .series-layout {
+    display: grid;
+    grid-template-columns: var(--rail-w, 13rem) minmax(0, 1fr);
+    gap: 3rem;
+  }
+}
+
+.series-rail {
+  position: relative;
+}
+
+/* Lives in the gap between rail and article; dragging it sets the width. */
+.series-rail__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -1.5rem;
+  width: 0.75rem;
+  cursor: col-resize;
+  touch-action: none;
+}
+.series-rail__handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: transparent;
+  transition: background 0.15s ease;
+}
+.series-rail__handle:hover::before,
+.series-rail__handle:focus-visible::before,
+.series-rail__handle.is-dragging::before {
+  background: var(--accent-2);
+}
+
+.series-nav {
+  font-size: 0.9375rem;
+}
+
+.series-nav__brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+/* A chapter is a page; its sub-entries hang off a hairline that runs down
+   the left, so the second level reads as indented rather than as more of
+   the same list. */
+.series-nav__chapter {
+  display: block;
+  padding: 0.3rem 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--fg);
+  transition: color 0.15s ease;
+}
+.series-nav__chapter:hover,
+.series-nav__chapter.is-active {
+  color: var(--accent);
+}
+/* A group's own label when that group has no page of its own. */
+.series-nav__chapter--static {
+  cursor: default;
+}
+.series-nav__chapter--static:hover {
+  color: var(--fg);
+}
+
+.series-nav__items {
+  margin: 0.15rem 0 0.6rem 1.3rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid var(--line);
+}
+
+/* One row per top-level entry. The gutter holds the fold toggle for a group
+   and stays empty for a plain page, so every label starts on the same line. */
+.series-nav__row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.series-nav__gutter,
+.series-nav__toggle {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.9rem;
+  height: 0.9rem;
+}
+.series-nav__toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+/* Inert until the script wires it up, so it never looks clickable and isn't. */
+.series-nav:not([data-ready]) .series-nav__toggle {
+  visibility: hidden;
+}
+.series-nav__toggle:hover {
+  color: var(--fg);
+}
+.series-nav__caret {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+}
+.series-nav__toggle[aria-expanded="false"] .series-nav__caret {
+  transform: rotate(-45deg);
+}
+
+.series-nav__item {
+  position: relative;
+  display: block;
+  padding: 0.2rem 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.series-nav__item:hover {
+  color: var(--fg);
+}
+.series-nav__item.is-active {
+  color: var(--accent);
+}
+/* The rust tick sits on the hairline, marking where you are in the page. */
+.series-nav__item.is-active::before {
+  content: "";
+  position: absolute;
+  left: -0.9rem;
+  top: 0.6rem;
+  width: 0.5rem;
+  height: 2px;
+  background: var(--accent-2);
+}
+
+.series-disclosure > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.series-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.series-disclosure > summary::before {
+  content: "▸";
+  margin-right: 0.5rem;
+  color: var(--accent-2);
+}
+.series-disclosure[open] > summary::before {
+  content: "▾";
+}
+
+/* Prev/next at the foot of every page in the series. The boxes wear `.card`,
+   so they sit in the same family as the writing list and project tiles. */
+.series-pager {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 3rem;
+}
+.series-pager__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-crt);
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  /* `.card` transitions transform/box-shadow/border-color; colour has to be
+     repeated here or the shorthand would drop them. */
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.series-pager__link:hover {
+  color: var(--accent);
+}
+/* With only one side present, the margins keep it on its own edge. */
+.series-pager__link--prev {
+  margin-right: auto;
+}
+.series-pager__link--next {
+  margin-left: auto;
+}
+

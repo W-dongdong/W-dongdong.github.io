@@ -1,0 +1,25 @@
+---
+interface Props {
+  prevHref?: string;
+  nextHref?: string;
+}
+
+const { prevHref, nextHref } = Astro.props;
+---
+
+{
+  (prevHref || nextHref) && (
+    <nav class="series-pager" aria-label="章节翻页">
+      {prevHref && (
+        <a href={prevHref} rel="prev" class="card series-pager__link series-pager__link--prev">
+          ← 上一页
+        </a>
+      )}
+      {nextHref && (
+        <a href={nextHref} rel="next" class="card series-pager__link series-pager__link--next">
+          下一页 →
+        </a>
+      )}
+    </nav>
+  )
+}

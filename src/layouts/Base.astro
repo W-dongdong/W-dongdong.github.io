@@ -45,6 +45,15 @@ const siteName = 'WU Yandong';
           : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', resolved);
 
+        // Rail width for series pages, remembered from the last drag. Read here
+        // so the rail is already the right width on the first paint.
+        try {
+          var railW = parseInt(localStorage.getItem('rail-w') || '', 10);
+          if (railW > 100 && railW < 1000) {
+            document.documentElement.style.setProperty('--rail-w', railW + 'px');
+          }
+        } catch (e) {}
+
         // Arm scroll-reveal before first paint so nothing flashes in visible and
         // then jumps. Only armed when we can actually reveal things again.
         try {
@@ -67,6 +76,98 @@ const siteName = 'WU Yandong';
     <MusicPlayer />
 
     <script>
+      // --- Copy buttons on code blocks ------------------------------------
+      // Wrapped client-side so the markdown keeps rendering plain <pre><code>:
+      // the button sits outside the <pre>, which scrolls sideways on its own.
+      const COPY_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<rect x="9" y="9" width="13" height="13" rx="2" />' +
+        '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>';
+      const DONE_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<polyline points="20 6 9 17 4 12" /></svg>';
+      const FAIL_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>';
+
+      function legacyCopy(text: string): boolean {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.top = '-1000px';
+        area.style.opacity = '0';
+        document.body.append(area);
+        area.select();
+
+        let ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch {
+          ok = false;
+        }
+        area.remove();
+        return ok;
+      }
+
+      function addCopyButtons() {
+        document.querySelectorAll<HTMLElement>('.blog-prose pre').forEach((pre) => {
+          if (pre.parentElement?.classList.contains('code-block')) return;
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-block';
+          pre.replaceWith(wrapper);
+          wrapper.append(pre);
+
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'code-copy';
+          button.title = '复制代码';
+          button.setAttribute('aria-label', '复制代码');
+          button.innerHTML =
+            '<span class="code-copy__icon">' +
+            COPY_ICON +
+            '</span><span class="sr-only" data-state>复制代码</span>';
+          wrapper.append(button);
+
+          const icon = button.querySelector('.code-copy__icon')!;
+          const state = button.querySelector('[data-state]')!;
+          let timer = 0;
+
+          button.addEventListener('click', async () => {
+            const code = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
+
+            let ok = true;
+            try {
+              await navigator.clipboard.writeText(code);
+            } catch {
+              // No clipboard API outside a secure context — fall back.
+              ok = legacyCopy(code);
+            }
+
+            button.classList.toggle('is-done', ok);
+            button.classList.toggle('is-failed', !ok);
+            icon.innerHTML = ok ? DONE_ICON : FAIL_ICON;
+
+            const message = ok ? '已复制' : '复制失败';
+            button.title = message;
+            button.setAttribute('aria-label', message);
+            state.textContent = message;
+
+            window.clearTimeout(timer);
+            timer = window.setTimeout(() => {
+              button.classList.remove('is-done', 'is-failed');
+              icon.innerHTML = COPY_ICON;
+              button.title = '复制代码';
+              button.setAttribute('aria-label', '复制代码');
+              state.textContent = '复制代码';
+            }, 1600);
+          });
+        });
+      }
+
+      document.addEventListener('astro:page-load', addCopyButtons);
+
       // --- Scroll reveal -------------------------------------------------
       // ClientRouter swaps the page body on navigation, so re-arm the class on
       // <html> and re-observe whatever `[data-reveal]` elements now exist.
@@ -107,6 +208,13 @@ const siteName = 'WU Yandong';
       document.addEventListener('astro:before-swap', function (event: any) {
         var incoming: Document | undefined = event.newDocument;
         if (incoming && canReveal()) incoming.documentElement.classList.add('reveal-ready');
+
+        // The swap copies the incoming <html> over the live one, which would
+        // drop the rail width set at runtime — carry it onto the new document.
+        if (incoming) {
+          var railW = document.documentElement.style.getPropertyValue('--rail-w');
+          if (railW) incoming.documentElement.style.setProperty('--rail-w', railW);
+        }
       });
 
       document.addEventListener('astro:after-swap', function () {

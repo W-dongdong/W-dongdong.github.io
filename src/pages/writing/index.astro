@@ -2,10 +2,13 @@
 import Base from '../../layouts/Base.astro';
 import WritingCard from '../../components/WritingCard.astro';
 import { getCollection } from 'astro:content';
+import { isChapterEntryId } from '../../lib/series';
 
-const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+// Chapters of a series are reached through the series' rail, so the list only
+// shows the page each series opens on.
+const posts = (await getCollection('writing', ({ data }) => !data.draft))
+  .filter((post) => !isChapterEntryId(post.id))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <Base

@@ -16,18 +16,14 @@ interface Props {
 
 const { entry } = Astro.props;
 const dateStr = entry.data.date.toISOString().slice(0, 10);
-
-const words = (entry.body ?? '').trim().split(/\s+/).filter(Boolean).length;
-const minutes = Math.max(1, Math.round(words / 220));
 ---
 
 <a
   href={`/writing/${entry.id}`}
   class="card group flex flex-col gap-3 p-5 sm:flex-row sm:gap-6"
 >
-  <div class="crt-text flex flex-none items-baseline gap-3 text-xs leading-none text-ink-muted sm:w-28 sm:flex-col sm:items-start sm:gap-1.5">
+  <div class="crt-text flex-none text-xs leading-none text-ink-muted sm:w-28">
     <time datetime={dateStr}>{dateStr}</time>
-    <span>{minutes} min</span>
   </div>
 
   <div class="flex-1">
